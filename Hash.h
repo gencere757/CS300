@@ -18,8 +18,7 @@ public:
 private:
     int search(int elem);
     void resize();
-    void modulus(int key);
-    int modulusHashFunction();
+    int modulus(int key);   //Hashes the given key
 
     int* hashedElements;
     int size;

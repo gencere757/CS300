@@ -46,7 +46,7 @@ void Hash::resize()
 {
 }
 
-void Hash::modulus(int key)
+int Hash::modulus(int key)
 {
     //Random values for hash function that  will be determined at the start of program
     static int a;
@@ -55,6 +55,9 @@ void Hash::modulus(int key)
     a = getRandomInt(1,100);
     b = getRandomInt(1,100);
     p = getRandomInt(1,100);
+
+    int hashedVal = (a * key + b) % p % size;
+    return hashedVal;
 }
 
 
