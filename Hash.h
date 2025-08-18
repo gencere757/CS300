@@ -16,14 +16,15 @@ public:
     void changeParameters(char mode);
 
 private:
-    int search(int elem);
-    void resize();
+    int search(int elem);   //Search  for a particular element, return -1 if not found
+    void resize();  //Resize the table
     int modulus(int key);   //Hashes the given key
+    int collisionHandler(int elem);
 
-    int* hashedElements;
-    int size;
-    char hashType;
-
+    int* hashedElements;    //Array containing the elements
+    int size;   //Size of the table
+    char hashType;  //o -> modulus hashing, u -> multiplacitive hashing
+    char collisionHandling; //l -> linear probing, q -> quadratic probing, s -> seperate chaining
 };
 
 

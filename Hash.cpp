@@ -19,20 +19,58 @@ int getRandomInt(int min, int max) {
 
 Hash::Hash()
 {
-    hashedElements = nullptr;
+    size = 10;
+    hashedElements = new int[size];
+    for (int i = 0; i < size; i++)
+    {
+        hashedElements[i] = -1;
+    }
 }
 
 void Hash::insert(int elem)
 {
     if (hashType == 'o')    //Modulus Hashing
     {
-
+        int idx = modulus(elem);
+        if (hashedElements[idx] == -1)  //If the location is vacant
+        {
+            hashedElements[idx] = elem;
+        }
+        else   //We need to do collision handling
+        {
+            idx = collisionHandling(idx);
+        }
     }
     else if (hashType == 'u')   //Multiplicative hashing
     {
 
     }
 }
+
+int Hash::collisionHandler(int invalidIdx)
+{
+    int tempIdx = invalidIdx;
+    if (collisionHandling == 'l')
+    {
+        while (hashedElements[tempIdx] == -1)
+        {
+            tempIdx++;
+        }
+    }
+    else if (collisionHandling == 'q')
+    {
+        int iteration = 1;
+        while (hashedElements[tempIdx] == -1)
+        {
+            tempIdx+= iteration * iteration;
+        }
+    }
+    else if (collisionHandling == 's')
+    {
+
+    }
+}
+
 
 bool Hash::deleteElem(int elem)
 {
