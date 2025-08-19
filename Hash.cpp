@@ -20,18 +20,48 @@ int getRandomInt(int min, int max) {
 Hash::Hash()
 {
     size = 10;
-    hashedElements = new int[size];
-    for (int i = 0; i < size; i++)
+    if (collisionHandling == 's')   //If we use seperate chaining, we will use the linked list array
     {
-        hashedElements[i] = -1;
+        seperateChainingLists = new Node*[size];
+        for (int i = 0; i < size; i++)
+        {
+            seperateChainingLists[i] = nullptr;
+        }
+    }
+    else   //We will use normal integer array
+    {
+        hashedElements = new int[size];
+        for (int i = 0; i < size; i++)
+        {
+            hashedElements[i] = -1;
+        }
     }
 }
 
 void Hash::insert(int elem)
 {
+    int idx;    //Place we will insert to
+    //Determining idx depending on hashing type
     if (hashType == 'o')    //Modulus Hashing
     {
-        int idx = modulus(elem);
+        idx = modulus(elem);
+
+    }
+    else if (hashType == 'u')   //Multiplicative hashing
+    {
+
+    }
+
+    //Inserting and handling collisions
+    if (collisionHandling == 's')   //If seperate chaining, we will use linked list array
+    {
+        if (seperateChainingLists[idx] == nullptr)
+        {
+
+        }
+    }
+    else   //Then we will use normal integer array
+    {
         if (hashedElements[idx] == -1)  //If the location is vacant
         {
             hashedElements[idx] = elem;
@@ -41,23 +71,19 @@ void Hash::insert(int elem)
             idx = collisionHandling(idx);
         }
     }
-    else if (hashType == 'u')   //Multiplicative hashing
-    {
-
-    }
 }
 
 int Hash::collisionHandler(int invalidIdx)
 {
     int tempIdx = invalidIdx;
-    if (collisionHandling == 'l')
+    if (collisionHandling == 'l')   //Linear Probing
     {
         while (hashedElements[tempIdx] == -1)
         {
             tempIdx++;
         }
     }
-    else if (collisionHandling == 'q')
+    else if (collisionHandling == 'q')  //Quadratic Probing
     {
         int iteration = 1;
         while (hashedElements[tempIdx] == -1)
@@ -65,11 +91,11 @@ int Hash::collisionHandler(int invalidIdx)
             tempIdx+= iteration * iteration;
         }
     }
-    else if (collisionHandling == 's')
+    else if (collisionHandling == 's')  //Seperate Chaining
     {
 
     }
-    else if (collisionHandling == 'd')
+    else if (collisionHandling == 'd')  //Double Hashing
     {
 
     }

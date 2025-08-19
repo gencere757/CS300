@@ -27,7 +27,7 @@ private:
     int collisionHandler(int elem);
 
     int* hashedElements;    //Array containing the elements
-    Node* lists;    //An array of linked lists to be used when using seperate chaining method
+    Node** seperateChainingLists;    //An array of linked lists to be used when using seperate chaining method
     int size;   //Size of the table
     char hashType;  //o -> modulus hashing, u -> multiplacitive hashing
     char collisionHandling; //l -> linear probing, q -> quadratic probing, s -> seperate chaining, d -> double hashing
