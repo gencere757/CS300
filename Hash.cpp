@@ -56,7 +56,7 @@ void Hash::insert(int elem)
     {
         if (seperateChainingLists[idx] == nullptr)  //If the space is vacant
         {
-
+            seperateChainingLists[idx] = new Node(elem,nullptr);
         }
         else   //We need to do collision handling
         {

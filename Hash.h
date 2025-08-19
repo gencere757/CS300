@@ -10,6 +10,7 @@ struct Node
     int value;
     Node* next;
     Node();
+    Node(int valueOfNode, Node* nextNode) : value(valueOfNode), next(nextNode){}
 };
 
 class Hash {
