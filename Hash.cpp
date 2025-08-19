@@ -69,6 +69,10 @@ int Hash::collisionHandler(int invalidIdx)
     {
 
     }
+    else if (collisionHandling == 'd')
+    {
+
+    }
 }
 
 

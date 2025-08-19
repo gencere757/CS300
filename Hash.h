@@ -5,7 +5,12 @@
 #ifndef HASH_H
 #define HASH_H
 
-
+struct Node
+{
+    int value;
+    Node* next;
+    Node();
+};
 
 class Hash {
 public:
@@ -22,9 +27,11 @@ private:
     int collisionHandler(int elem);
 
     int* hashedElements;    //Array containing the elements
+    Node* lists;    //An array of linked lists to be used when using seperate chaining method
     int size;   //Size of the table
     char hashType;  //o -> modulus hashing, u -> multiplacitive hashing
-    char collisionHandling; //l -> linear probing, q -> quadratic probing, s -> seperate chaining
+    char collisionHandling; //l -> linear probing, q -> quadratic probing, s -> seperate chaining, d -> double hashing
+    char workMode;  // r -> random, a -> adversarial
 };
 
 
