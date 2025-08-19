@@ -74,7 +74,7 @@ void Hash::insert(int elem)
     {
         if (hashedElements[idx] != -1)  //If we need to do collision handling
         {
-            idx = collisionHandler(idx);
+            idx = probingHandler(idx);
         }
         hashedElements[idx] = elem;
     }
