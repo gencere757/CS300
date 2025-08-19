@@ -45,43 +45,42 @@ void Hash::insert(int elem)
     if (hashType == 'o')    //Modulus Hashing
     {
         idx = modulus(elem);
-
     }
     else if (hashType == 'u')   //Multiplicative hashing
     {
-
+        idx = multiplicative(elem);
     }
 
     //Inserting and handling collisions
     if (collisionHandling == 's')   //If seperate chaining, we will use linked list array
     {
-        if (seperateChainingLists[idx] == nullptr)  //If the space is vacant
-        {
-            seperateChainingLists[idx] = new Node(elem, nullptr);
-        }
-        else   //Seperate chaining collision handling
+
+        if (seperateChainingLists[idx] != nullptr)  //If we need to do collision handling
         {
             Node* current = seperateChainingLists[idx];
             while (current->next)   //Iterate until finding last node on the chain
             {
-                current->next = new Node(elem, nullptr);    //Add the node to the end of the chain
+                current = current->next;
             }
+            current->next = new Node(elem, nullptr);
         }
+        else   //If we can insert right away (i.e. spot is vacant)
+        {
+            seperateChainingLists[idx] = new Node(elem, nullptr);
+        }
+
     }
     else   //Then we will use normal integer array
     {
-        if (hashedElements[idx] == -1)  //If the location is vacant
+        if (hashedElements[idx] != -1)  //If we need to do collision handling
         {
-            hashedElements[idx] = elem;
+            idx = collisionHandler(idx);
         }
-        else   //We need to do collision handling
-        {
-            idx = collisionHandling(idx);
-        }
+        hashedElements[idx] = elem;
     }
 }
 
-int Hash::collisionHandler(int invalidIdx)
+int Hash::probingHandler(int invalidIdx)
 {
     int tempIdx = invalidIdx;
     if (collisionHandling == 'l')   //Linear Probing
@@ -98,10 +97,6 @@ int Hash::collisionHandler(int invalidIdx)
         {
             tempIdx+= iteration * iteration;
         }
-    }
-    else if (collisionHandling == 's')  //Seperate Chaining
-    {
-
     }
     else if (collisionHandling == 'd')  //Double Hashing
     {

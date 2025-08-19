@@ -26,7 +26,7 @@ private:
     void resize();  //Resize the table
     int modulus(int key);   //Hashes the given key according to modulus hashing
     int multiplicative(int key); // hashes given key according to multiplicative hashing
-    int collisionHandler(int elem);
+    int probingHandler(int elem); //Handles probings
 
     int* hashedElements;    //Array containing the elements
     Node** seperateChainingLists;    //An array of linked lists to be used when using seperate chaining method
