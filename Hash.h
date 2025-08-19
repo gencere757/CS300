@@ -35,7 +35,6 @@ private:
     int size;   //Size of the table
     char hashType;  //o -> modulus hashing, u -> multiplacitive hashing
     char collisionHandling; //l -> linear probing, q -> quadratic probing, s -> seperate chaining, d -> double hashing
-    char workMode;  // r -> random, a -> adversarial
 };
 
 

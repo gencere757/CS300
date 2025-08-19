@@ -9,10 +9,10 @@ int main()
 {
     //Insert test
     Hash table;
-    table.insert(3);
-    table.insert(5);
-    table.insert(13);
-    table.insert(654231);
+    for (int i = 1; i < 500; i++)
+    {
+        table.insert(i);
+    }
     table.printTable();
     return 0;
 }

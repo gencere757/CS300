@@ -32,7 +32,7 @@ Hash::Hash()
         seperateChainingLists = new Node*[size];
         for (int i = 0; i < size; i++)
         {
-            seperateChainingLists[i] = nullptr;
+            seperateChainingLists[i] = new Node(-1, nullptr);
         }
     }
     else   //We will use normal integer array
@@ -62,7 +62,7 @@ void Hash::insert(int elem)
     if (collisionHandling == 's')   //If seperate chaining, we will use linked list array
     {
 
-        if (seperateChainingLists[idx] != nullptr)  //If we need to do collision handling
+        if (seperateChainingLists[idx]->value != -1)  //If we need to do collision handling
         {
             Node* current = seperateChainingLists[idx];
             while (current->next)   //Iterate until finding last node on the chain
@@ -159,6 +159,16 @@ void Hash::printTable()
     }
     else
     {
-
+        cout << "{" << endl;
+        for (int i = 0; i < size; i++)
+        {
+            Node* elem = seperateChainingLists[i];
+            while (elem->next)
+            {
+                cout << elem->value << ", ";
+                elem = elem->next;
+            }
+            cout << elem->value << endl;
+        }
     }
 }
