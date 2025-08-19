@@ -2,9 +2,12 @@
 // Created by Arda Gencer on 16.08.2025.
 //
 
+#include <iostream>
 #include "Hash.h"
 #include <random>
 #include <chrono>
+
+using namespace std;
 
 int getRandomInt(int min, int max) {
     // Static variables to ensure the generator and seeding happen only once
@@ -20,6 +23,10 @@ int getRandomInt(int min, int max) {
 Hash::Hash()
 {
     size = 10;
+    cout << "Enter hashing type:" << endl;
+    cin >> hashType;
+    cout << "Enter collision handling method:";
+    cin >> collisionHandling;
     if (collisionHandling == 's')   //If we use seperate chaining, we will use the linked list array
     {
         seperateChainingLists = new Node*[size];
@@ -75,7 +82,7 @@ void Hash::insert(int elem)
         {
             if (collisionHandling == 'l')   //Linear Probing
             {
-                while (hashedElements[idx] == -1)
+                while (hashedElements[idx] != -1)
                 {
                     idx++;
                 }
@@ -83,7 +90,7 @@ void Hash::insert(int elem)
             else if (collisionHandling == 'q')  //Quadratic Probing
             {
                 int iteration = 1;
-                while (hashedElements[idx] == -1)
+                while (hashedElements[idx] != -1)
                 {
                     idx+= iteration * iteration;
                 }
@@ -137,4 +144,21 @@ int Hash::multiplicative(int key)
     static double A = getRandomInt(1,1000)/1000.00; // decided at the start of the program
     int hashedVal = double(key * A - int(key*A)) * size;
     return hashedVal;
+}
+
+void Hash::printTable()
+{
+    if (collisionHandling != 's')
+    {
+        cout << "[";
+        for (int i = 0; i < size - 1; i++)
+        {
+            cout << hashedElements[i] << ", ";
+        }
+        cout << hashedElements[size - 1] << "]";
+    }
+    else
+    {
+
+    }
 }

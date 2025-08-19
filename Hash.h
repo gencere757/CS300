@@ -18,6 +18,8 @@ public:
     Hash();
     void insert(int elem);
     bool deleteElem(int elem);
+    void printTable();
+
     void setHashingType();
     void changeParameters(char hashType);
 
@@ -26,7 +28,7 @@ private:
     void resize();  //Resize the table
     int modulus(int key);   //Hashes the given key according to modulus hashing
     int multiplicative(int key); // hashes given key according to multiplicative hashing
-    void printTable();
+
 
     int* hashedElements;    //Array containing the elements
     Node** seperateChainingLists;    //An array of linked lists to be used when using seperate chaining method
