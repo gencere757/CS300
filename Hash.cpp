@@ -49,7 +49,7 @@ void Hash::insert(int elem)
     }
     else if (hashType == 'u')   //Multiplicative hashing
     {
-
+        idx = multiplicative(elem);
     }
 
     //Inserting and handling collisions
@@ -125,6 +125,13 @@ int Hash::modulus(int key)
     p = getRandomInt(1,100);
 
     int hashedVal = (a * key + b) % p % size;
+    return hashedVal;
+}
+
+int Hash::multiplicative(int key)
+{
+    static double A = getRandomInt(1,1000)/1000.00; // decided at the start of the program
+    int hashedVal = double(key * A - int(key*A)) * size;
     return hashedVal;
 }
 
