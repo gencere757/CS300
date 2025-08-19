@@ -62,56 +62,52 @@ void Hash::insert(int elem)
             {
                 current = current->next;
             }
-            current->next = new Node(elem, nullptr);
+            current->next = new Node(elem, nullptr);    //Insert to the end of the chain
         }
         else   //If we can insert right away (i.e. spot is vacant)
         {
-            seperateChainingLists[idx] = new Node(elem, nullptr);
+            seperateChainingLists[idx] = new Node(elem, nullptr);   //Insert to array
         }
-
     }
     else   //Then we will use normal integer array
     {
         if (hashedElements[idx] != -1)  //If we need to do collision handling
         {
-            idx = probingHandler(idx);
+            if (collisionHandling == 'l')   //Linear Probing
+            {
+                while (hashedElements[idx] == -1)
+                {
+                    idx++;
+                }
+            }
+            else if (collisionHandling == 'q')  //Quadratic Probing
+            {
+                int iteration = 1;
+                while (hashedElements[idx] == -1)
+                {
+                    idx+= iteration * iteration;
+                }
+            }
+            else if (collisionHandling == 'd')  //Double Hashing
+            {
+                int i = 0;
+                int stepForDoubleHashing = 1 + (elem %  (size - 1));
+                while (hashedElements[idx] != -1) {
+                    idx = (idx + (i*stepForDoubleHashing)) % size;
+                    i++;
+                }
+            }
         }
-        hashedElements[idx] = elem;
+        hashedElements[idx] = elem; //Insert the element
     }
 }
-
-int Hash::probingHandler(int invalidIdx)
-{
-    int tempIdx = invalidIdx;
-    if (collisionHandling == 'l')   //Linear Probing
-    {
-        while (hashedElements[tempIdx] == -1)
-        {
-            tempIdx++;
-        }
-    }
-    else if (collisionHandling == 'q')  //Quadratic Probing
-    {
-        int iteration = 1;
-        while (hashedElements[tempIdx] == -1)
-        {
-            tempIdx+= iteration * iteration;
-        }
-    }
-    else if (collisionHandling == 'd')  //Double Hashing
-    {
-        int i = 0;
-        int stepForDoubleHashing = 1 + (key %  (size - 1));
-        while (hashedElements[tempIdx] != -1) {
-            tempIdx = (idx + (i*stepForDoubleHashing)) % size;
-            i++;
-        }
-    }
-}
-
 
 bool Hash::deleteElem(int elem)
 {
+    if (!search(elem))
+    {
+        return false;
+    }
 }
 
 int Hash::search(int elem)

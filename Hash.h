@@ -19,14 +19,14 @@ public:
     void insert(int elem);
     bool deleteElem(int elem);
     void setHashingType();
-    void changeParameters(char mode);
+    void changeParameters(char hashType);
 
 private:
     int search(int elem);   //Search  for a particular element, return -1 if not found
     void resize();  //Resize the table
     int modulus(int key);   //Hashes the given key according to modulus hashing
     int multiplicative(int key); // hashes given key according to multiplicative hashing
-    int probingHandler(int elem); //Handles probings
+    void printTable();
 
     int* hashedElements;    //Array containing the elements
     Node** seperateChainingLists;    //An array of linked lists to be used when using seperate chaining method
