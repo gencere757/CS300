@@ -100,7 +100,12 @@ int Hash::probingHandler(int invalidIdx)
     }
     else if (collisionHandling == 'd')  //Double Hashing
     {
-
+        int i = 0;
+        int stepForDoubleHashing = 1 + (key %  (size - 1));
+        while (hashedElements[tempIdx] != -1) {
+            tempIdx = (idx + (i*stepForDoubleHashing)) % size;
+            i++;
+        }
     }
 }
 
