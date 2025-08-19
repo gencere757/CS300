@@ -45,6 +45,7 @@ void Hash::insert(int elem)
     if (hashType == 'o')    //Modulus Hashing
     {
         idx = modulus(elem);
+
     }
     else if (hashType == 'u')   //Multiplicative hashing
     {
@@ -54,11 +55,7 @@ void Hash::insert(int elem)
     //Inserting and handling collisions
     if (collisionHandling == 's')   //If seperate chaining, we will use linked list array
     {
-        if (seperateChainingLists[idx] == nullptr)  //If the space is vacant
-        {
-            seperateChainingLists[idx] = new Node(elem,nullptr);
-        }
-        else   //We need to do collision handling
+        if (seperateChainingLists[idx] == nullptr)
         {
 
         }
@@ -131,4 +128,9 @@ int Hash::modulus(int key)
     return hashedVal;
 }
 
-
+int Hash::multiplicative(int key)
+{
+    static double A = getRandomInt(1,1000)/1000.00; // decided at the start of the program
+    int hashedVal = double(key * A - int(key*A)) * size;
+    return hashedVal;
+}
