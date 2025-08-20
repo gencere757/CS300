@@ -117,8 +117,69 @@ bool Hash::deleteElem(int elem)
     }
 }
 
-int Hash::search(int elem)
+bool Hash::search(int elem)
 {
+    int hashIndex;
+    if (hashType == 'o')    //Modulus Hashing
+        {
+        hashIndex = modulus(elem);
+        }
+    else if (hashType == 'u')   //Multiplicative hashing
+        {
+        hashIndex = multiplicative(elem);
+        }
+    if (collisionHandling == 's') {
+        Node* current = hashedElements[hashIndex];
+        while (current != nullptr) {
+            if (current->element == elem)
+                return true;
+            current = current->next;
+        }
+        return false;
+    }
+    if (collisionHandling == 'l') {
+        int indexStart = hashIndex;
+        while (hashedElements[hashIndex] != -1) {
+            if (hashedElements[hashIndex] == elem) {
+                return true;
+            }
+            hashIndex = (hashIndex + 1) % size; //calculate next index tried according to linear probing
+            if (hashIndex == indexStart) {
+                break;
+            }
+        }
+        return false;
+    }
+    if (collisionHandling == 'q') {
+        int indexStart = hashIndex, iteration = 1;
+        while (hashedElements[hashIndex] != -1) {
+            if (hashedElements[hashIndex] == elem) {
+                return true;
+            }
+            hashIndex = (hashIndex + iteration * iteration) % size; // calculate next index tried according to quadratic probing
+            iteration++;
+            if (iteration > size) {
+                break;
+            }
+        }
+        return false;
+    }
+    if (collisionHandling == 'd') {
+        int indexStart = hashIndex, i = 0;
+        int doubleHashStep = 1 + (elem % (size - 1));
+        while (hashedElements[hashIndex] != -1) {
+            if (hashedElements[hashIndex] == elem) {
+                return true;
+            }
+            hashIndex = (hashIndex + i * doubleHashStep) % size;
+            i++;
+            if (size < i) {
+                break;
+            }
+        }
+        return false;
+    }
+    return false;
 }
 
 void Hash::resize()
