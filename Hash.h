@@ -24,7 +24,7 @@ public:
     void changeParameters(char hashType);
 
 private:
-    int search(int elem);   //Search  for a particular element, return -1 if not found
+    bool search(int elem);   //Search  for a particular element, return true if found and false if not found
     void resize();  //Resize the table
     int modulus(int key);   //Hashes the given key according to modulus hashing
     int multiplicative(int key); // hashes given key according to multiplicative hashing
