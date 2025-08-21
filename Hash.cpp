@@ -152,7 +152,7 @@ bool Hash::search(int elem)
         return false;
     }
     if (collisionHandling == 'q') {
-        int indexStart = hashIndex, iteration = 1;
+        int iteration = 1;
         while (hashedElements[hashIndex] != -1) {
             if (hashedElements[hashIndex] == elem) {
                 return true;
@@ -166,7 +166,7 @@ bool Hash::search(int elem)
         return false;
     }
     if (collisionHandling == 'd') {
-        int indexStart = hashIndex, i = 0;
+        int i = 0;
         int doubleHashStep = 1 + (elem % (size - 1));
         while (hashedElements[hashIndex] != -1) {
             if (hashedElements[hashIndex] == elem) {
