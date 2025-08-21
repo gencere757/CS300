@@ -129,9 +129,9 @@ bool Hash::search(int elem)
         hashIndex = multiplicative(elem);
         }
     if (collisionHandling == 's') {
-        Node* current = hashedElements[hashIndex];
+        Node* current = seperateChainingLists[hashIndex];
         while (current != nullptr) {
-            if (current->element == elem)
+            if (current->value == elem)
                 return true;
             current = current->next;
         }
