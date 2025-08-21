@@ -9,7 +9,7 @@ int main()
 {
     //Insert test
     Hash table;
-    for (int i = 1; i < 500; i++)
+    for (int i = 1; i < 10; i++)
     {
         table.insert(i);
     }

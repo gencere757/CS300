@@ -128,14 +128,12 @@ void Hash::resize()
 int Hash::modulus(int key)
 {
     //Random values for hash function that  will be determined at the start of program
-    static int a;
-    static int b;
-    static int p;
-    a = getRandomInt(1,100);
-    b = getRandomInt(1,100);
-    p = getRandomInt(1,100);
+    static int a = getRandomInt(1,100);
+    static int b = getRandomInt(1,100);
+    static int p = getRandomInt(1,100);
 
     int hashedVal = (a * key + b) % p % size;
+    cout << hashedVal << endl;
     return hashedVal;
 }
 
