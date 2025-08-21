@@ -47,7 +47,7 @@ Hash::Hash()
 
 void Hash::insert(int elem)
 {
-    int idx;    //Place we will insert to
+    int idx = 0;    //Place we will insert to
     //Determining idx depending on hashing type
     if (hashType == 'o')    //Modulus Hashing
     {
@@ -57,6 +57,7 @@ void Hash::insert(int elem)
     {
         idx = multiplicative(elem);
     }
+    cout << "Trying to insert into position " << idx << endl;
 
     //Inserting and handling collisions
     if (collisionHandling == 's')   //If seperate chaining, we will use linked list array
@@ -84,6 +85,8 @@ void Hash::insert(int elem)
             {
                 while (hashedElements[idx] != -1)
                 {
+                    cout << "Collision happened," << "table[" << idx << "] is full." << endl;
+                    cout << "Applying linear probing..." << endl;
                     idx++;
                 }
             }
@@ -92,6 +95,8 @@ void Hash::insert(int elem)
                 int iteration = 1;
                 while (hashedElements[idx] != -1)
                 {
+                    cout << "Collision happened," << "table[" << idx << "] is full." << endl;
+                    cout << "Applying quadratic probing..." << endl;
                     idx+= iteration * iteration;
                 }
             }
@@ -99,7 +104,10 @@ void Hash::insert(int elem)
             {
                 int i = 0;
                 int stepForDoubleHashing = 1 + (elem %  (size - 1));
-                while (hashedElements[idx] != -1) {
+                while (hashedElements[idx] != -1)
+                {
+                    cout << "Collision happened," << "table[" << idx << "] is full." << endl;
+                    cout << "Applying double hashing..." << endl;
                     idx = (idx + (i*stepForDoubleHashing)) % size;
                     i++;
                 }
@@ -121,17 +129,18 @@ bool Hash::search(int elem)
 {
     int hashIndex;
     if (hashType == 'o')    //Modulus Hashing
-        {
+    {
         hashIndex = modulus(elem);
-        }
+    }
     else if (hashType == 'u')   //Multiplicative hashing
-        {
+    {
         hashIndex = multiplicative(elem);
-        }
-
-    if (collisionHandling == 's') {
+    }
+    if (collisionHandling == 's')
+    {
         Node* current = seperateChainingLists[hashIndex];
-        while (current != nullptr) {
+        while (current != nullptr)
+        {
             if (current->value == elem)
                 return true;
             current = current->next;
@@ -140,41 +149,51 @@ bool Hash::search(int elem)
     }
     if (collisionHandling == 'l') {
         int indexStart = hashIndex;
-        while (hashedElements[hashIndex] != -1) {
-            if (hashedElements[hashIndex] == elem) {
+        while (hashedElements[hashIndex] != -1)
+        {
+            if (hashedElements[hashIndex] == elem)
+            {
                 return true;
             }
             hashIndex = (hashIndex + 1) % size; //calculate next index tried according to linear probing
-            if (hashIndex == indexStart) {
+            if (hashIndex == indexStart)
+            {
                 break;
             }
         }
         return false;
     }
     if (collisionHandling == 'q') {
-        int iteration = 1;
-        while (hashedElements[hashIndex] != -1) {
-            if (hashedElements[hashIndex] == elem) {
+        int indexStart = hashIndex, iteration = 1;
+        while (hashedElements[hashIndex] != -1)
+        {
+            if (hashedElements[hashIndex] == elem)
+            {
                 return true;
             }
             hashIndex = (hashIndex + iteration * iteration) % size; // calculate next index tried according to quadratic probing
             iteration++;
-            if (iteration > size) {
+            if (iteration > size)
+            {
                 break;
             }
         }
         return false;
     }
-    if (collisionHandling == 'd') {
-        int i = 0;
+    if (collisionHandling == 'd')
+    {
+        int indexStart = hashIndex, i = 0;
         int doubleHashStep = 1 + (elem % (size - 1));
-        while (hashedElements[hashIndex] != -1) {
-            if (hashedElements[hashIndex] == elem) {
+        while (hashedElements[hashIndex] != -1)
+        {
+            if (hashedElements[hashIndex] == elem)
+            {
                 return true;
             }
             hashIndex = (hashIndex + i * doubleHashStep) % size;
             i++;
-            if (size < i) {
+            if (size < i)
+            {
                 break;
             }
         }
@@ -195,7 +214,6 @@ int Hash::modulus(int key)
     static int p = getRandomInt(1,100);
 
     int hashedVal = (a * key + b) % p % size;
-    cout << hashedVal << endl;
     return hashedVal;
 }
 
@@ -208,7 +226,7 @@ int Hash::multiplicative(int key)
 
 void Hash::printTable()
 {
-    if (collisionHandling != 's')
+    if (collisionHandling != 's')   //Seperate  chaining
     {
         cout << "[";
         for (int i = 0; i < size - 1; i++)
@@ -225,7 +243,7 @@ void Hash::printTable()
             Node* elem = seperateChainingLists[i];
             while (elem->next)
             {
-                cout << elem->value << ", ";
+                cout << elem->value << "->";
                 elem = elem->next;
             }
             cout << elem->value << endl;
