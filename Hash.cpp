@@ -249,18 +249,83 @@ void Hash::resize(char type)
     {
         cout << "Size too small. Enlarging..." << endl;
         if (collisionHandling == 's')
-        {
-            Node** newArray = new Node*[size * 2];  //Create a new array of double size
-            for (int i = 0; i < size; i++)  //Copy current elems
             {
-                newArray[i] = separateChainingLists[i];
+            Node** oldArray = new Node*[size];
+            for (int i = 0; i < size; i++)  //Iterate over each element in array
+            {
+                Node* head = separateChainingLists[i];
+                Node* current = head;
+                Node* newCurrent = oldArray[i];
+                if (!current)
+                {
+                    newCurrent = nullptr;
+                    continue;
+                }
+                while (current->next)   //Iterate over each element in linked list
+                {
+                    newCurrent->next = new Node(current->value, current->next);
+                    current = current->next;
+                    newCurrent = newCurrent->next;
+                }
+                newCurrent->next = new Node(current->value, nullptr);
             }
-            for (int i = size; i < size*2; i++) //Initialize the rest
+            //Delete old array
+            for (int i = 0; i < size; i++)  //Iterate over each element in array
             {
-                newArray[i] = nullptr;
+                Node* head = separateChainingLists[i];
+                Node* current = head;
+                if (!current)
+                {
+                    delete current;
+                    continue;
+                }
+                while (current->next)   //Iterate over each element in linked list
+                {
+                    Node* temp = current;
+                    current = current->next;
+                    delete temp;
+                }
+                delete current;
             }
             delete separateChainingLists;
-            separateChainingLists = newArray;
+            separateChainingLists = new Node*[size * 2];
+
+            // Re-insert elements into resized table
+            for (int i = 0; i < size; i++) {
+                Node* head = oldArray[i];
+                Node* current = head;
+                Node* newCurrent = separateChainingLists[i];
+                if (!current) // null node case
+                {
+                    newCurrent = nullptr;
+                    continue;
+                }
+                while (current->next)   //Iterate over each element in linked list
+                {
+                    insert(current->value, false);
+                    current = current->next;
+                }
+                insert(current->value, false);
+            }
+
+            // Delete oldArray
+            for (int i = 0; i < size; i++)  //Iterate over each element in array
+            {
+                Node* head = oldArray[i];
+                Node* current = head;
+                if (!current)
+                {
+                    delete current;
+                    continue;
+                }
+                while (current->next)   //Iterate over each element in linked list
+                {
+                    Node* temp = current;
+                    current = current->next;
+                    delete temp;
+                }
+                delete current;
+            }
         }
         else
         {
