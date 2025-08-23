@@ -269,12 +269,13 @@ void Hash::resize(char type)
             {
                 newArray[i] = hashedElements[i];
             }
-            for (int i = size; i < size*2; i++) //Initialize the rest
-            {
-                newArray[i] = -1;
-            }
             delete hashedElements;
-            hashedElements = newArray;
+            hashedElements = new int[size*2];
+            for (int i = 0; i < size; i++) //Initialize the rest
+            {
+                insert(newArray[i]);
+            }
+            delete newArray;
         }
         size *= 2;
         cout << "Size increased to double" << endl;
@@ -362,9 +363,20 @@ void Hash::resize(char type)
                 delete current;
             }
         }
-        else
+        else // resizing for hashing methods other than separate chaining (array)
         {
-
+            int* newArray = new int[size / 2];
+            for (int i = 0; i < size; i++) {
+                if (hashedElements[i] != -1) {
+                    newArray[i] = hashedElements[i];
+                }
+            }
+            delete hashedElements;
+            hashedElements = new int[size / 2];
+            for (int i = 0; i < size; i++) {
+                insert(newArray[i]);
+            }
+            delete newArray;
         }
         cout << "Size reduced to half" << endl;
     }
