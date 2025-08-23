@@ -121,8 +121,9 @@ void Hash::insert(const int& elem)
     }
     usedSize++;
     loadFactor = double(usedSize) / size;
-    if (loadFactor > 0.7) {
-
+    if (loadFactor > 0.7)
+    {
+        resize();
     }
 }
 
