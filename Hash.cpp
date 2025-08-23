@@ -276,9 +276,9 @@ void Hash::resize()
 int Hash::modulus(const int& key) const
 {
     //Random values for hash function that  will be determined at the start of program
-    static int a = 5;
-    static int b = 5;
-    static int p = 5;
+    static int a = getRandomInt(1,100);
+    static int b = getRandomInt(1,100);
+    static int p = getRandomInt(1, 100);
 
     int hashedVal = (a * key + b) % p % size;
     return hashedVal;
@@ -293,7 +293,7 @@ int Hash::multiplicative(const int& key) const
 
 void Hash::printTable() const
 {
-    if (collisionHandling != 's')   //Seperate  chaining
+    if (collisionHandling != 's')   //Separate  chaining
     {
         cout << "[";
         for (int i = 0; i < size - 1; i++)
