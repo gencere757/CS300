@@ -320,6 +320,43 @@ void Hash::resize(char type)
             }
             delete separateChainingLists;
             separateChainingLists = new Node*[size / 2 + 1];
+
+            // Re-insert elements into resized table
+            for (int i = 0; i < size; i++) {
+                Node* head = oldArray[i];
+                Node* current = head;
+                Node* newCurrent = separateChainingLists[i];
+                if (!current) // null node case
+                {
+                    newCurrent = nullptr;
+                    continue;
+                }
+                while (current->next)   //Iterate over each element in linked list
+                {
+                    insert(current->value);
+                    current = current->next;
+                }
+                insert(current->value);
+            }
+
+            // Delete oldArray
+            for (int i = 0; i < size; i++)  //Iterate over each element in array
+            {
+                Node* head = oldArray[i];
+                Node* current = head;
+                if (!current)
+                {
+                    delete current;
+                    continue;
+                }
+                while (current->next)   //Iterate over each element in linked list
+                {
+                    Node* temp = current;
+                    current = current->next;
+                    delete temp;
+                }
+                delete current;
+            }
         }
         else
         {
