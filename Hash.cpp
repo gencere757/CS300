@@ -242,7 +242,35 @@ bool Hash::search(const int& elem) const
 
 void Hash::resize()
 {
-
+    if (collisionHandling == 's')
+    {
+        Node** newArray = new Node*[size * 2];  //Create a new array of double size
+        for (int i = 0; i < size; i++)  //Copy current elems
+        {
+            newArray[i] = separateChainingLists[i];
+        }
+        for (int i = size; i < size*2; i++) //Initialize the rest
+        {
+            newArray[i] = nullptr;
+        }
+        delete separateChainingLists;
+        separateChainingLists = newArray;
+    }
+    else
+    {
+        int* newArray = new int[size * 2];  //Create a new array of double size
+        for (int i = 0; i < size; i++)  //Copy current elems
+        {
+            newArray[i] = hashedElements[i];
+        }
+        for (int i = size; i < size*2; i++) //Initialize the rest
+        {
+            newArray[i] = -1;
+        }
+        delete hashedElements;
+        hashedElements = newArray;
+    }
+    size *= 2;
 }
 
 int Hash::modulus(const int& key) const
