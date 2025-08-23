@@ -9,7 +9,7 @@
 
 using namespace std;
 
-int getRandomInt(int min, int max) {
+int getRandomInt(const int& min, const int& max) {
     // Static variables to ensure the generator and seeding happen only once
     static std::mt19937 rng(std::chrono::high_resolution_clock::now().time_since_epoch().count());
 
@@ -23,16 +23,20 @@ int getRandomInt(int min, int max) {
 Hash::Hash()
 {
     size = 10;
+    loadFactor = 0;
+    usedSize = 0;
+    hashType = 'o';
+    collisionHandling = 'l';
     cout << "Enter hashing type:" << endl;
     cin >> hashType;
     cout << "Enter collision handling method:";
     cin >> collisionHandling;
     if (collisionHandling == 's')   //If we use seperate chaining, we will use the linked list array
     {
-        seperateChainingLists = new Node*[size];
+        separateChainingLists = new Node*[size];
         for (int i = 0; i < size; i++)
         {
-            seperateChainingLists[i] = new Node(-1, nullptr);
+            separateChainingLists[i] = new Node(-1, nullptr);
         }
     }
     else   //We will use normal integer array
@@ -45,7 +49,7 @@ Hash::Hash()
     }
 }
 
-void Hash::insert(int elem)
+void Hash::insert(const int& elem)
 {
     int idx = 0;    //Place we will insert to
     //Determining idx depending on hashing type
@@ -63,9 +67,9 @@ void Hash::insert(int elem)
     if (collisionHandling == 's')   //If seperate chaining, we will use linked list array
     {
 
-        if (seperateChainingLists[idx]->value != -1)  //If we need to do collision handling
+        if (separateChainingLists[idx]->value != -1)  //If we need to do collision handling
         {
-            Node* current = seperateChainingLists[idx];
+            Node* current = separateChainingLists[idx];
             while (current->next)   //Iterate until finding last node on the chain
             {
                 current = current->next;
@@ -74,7 +78,7 @@ void Hash::insert(int elem)
         }
         else   //If we can insert right away (i.e. spot is vacant)
         {
-            seperateChainingLists[idx] = new Node(elem, nullptr);   //Insert to array
+            separateChainingLists[idx] = new Node(elem, nullptr);   //Insert to array
         }
     }
     else   //Then we will use normal integer array
@@ -87,17 +91,18 @@ void Hash::insert(int elem)
                 {
                     cout << "Collision happened," << "table[" << idx << "] is full." << endl;
                     cout << "Applying linear probing..." << endl;
-                    idx++;
+                    idx = (idx + 1) % size;
                 }
             }
             else if (collisionHandling == 'q')  //Quadratic Probing
             {
-                int iteration = 1;
+                int iteration = 0;
                 while (hashedElements[idx] != -1)
                 {
                     cout << "Collision happened," << "table[" << idx << "] is full." << endl;
                     cout << "Applying quadratic probing..." << endl;
-                    idx+= iteration * iteration;
+                    idx = (idx + iteration * iteration) % size;
+                    iteration++;
                 }
             }
             else if (collisionHandling == 'd')  //Double Hashing
@@ -115,19 +120,52 @@ void Hash::insert(int elem)
         }
         hashedElements[idx] = elem; //Insert the element
     }
+    usedSize++;
+    loadFactor = double(usedSize) / size;
 }
 
-bool Hash::deleteElem(int elem)
+bool Hash::deleteElem(const int& elem)
 {
-    if (!search(elem))
+    if (!search(elem))  //If element not in table
     {
+        cout << "The element could not be found!" << endl;
         return false;
     }
+    //If element is found, get its index
+    int idx = 0;
+    if (hashType == 'o')
+    {
+        idx = modulus(elem);
+    }
+    else if (hashType == 'u')
+    {
+        idx = multiplicative(elem);
+    }
+    //Depending on collision handling type, delete the element
+    if (collisionHandling == 's')
+    {
+        Node* head = separateChainingLists[idx];    //Head of the current linked list
+        Node* current = head;   //Current node we're looking at
+        while (current->next->value != elem)  //Iterate until finding the correct node
+        {
+            current = current->next;
+        }
+        //Rewire the nodes and delete the correct node
+        Node* toBeDeleted = current->next;
+        current->next = current->next->next;
+        toBeDeleted->next = nullptr;
+        delete toBeDeleted;
+    }
+    else   //Linear probing etc.
+    {
+        hashedElements[idx] = -1;   //Delete the element
+    }
+    return true;
 }
 
-bool Hash::search(int elem)
+bool Hash::search(const int& elem) const
 {
-    int hashIndex;
+    int hashIndex = 0;
     if (hashType == 'o')    //Modulus Hashing
     {
         hashIndex = modulus(elem);
@@ -138,7 +176,7 @@ bool Hash::search(int elem)
     }
     if (collisionHandling == 's')
     {
-        Node* current = seperateChainingLists[hashIndex];
+        Node* current = separateChainingLists[hashIndex];
         while (current != nullptr)
         {
             if (current->value == elem)
@@ -164,7 +202,7 @@ bool Hash::search(int elem)
         return false;
     }
     if (collisionHandling == 'q') {
-        int indexStart = hashIndex, iteration = 1;
+        int iteration = 1;
         while (hashedElements[hashIndex] != -1)
         {
             if (hashedElements[hashIndex] == elem)
@@ -182,7 +220,7 @@ bool Hash::search(int elem)
     }
     if (collisionHandling == 'd')
     {
-        int indexStart = hashIndex, i = 0;
+        int i = 0;
         int doubleHashStep = 1 + (elem % (size - 1));
         while (hashedElements[hashIndex] != -1)
         {
@@ -204,27 +242,28 @@ bool Hash::search(int elem)
 
 void Hash::resize()
 {
+
 }
 
-int Hash::modulus(int key)
+int Hash::modulus(const int& key) const
 {
     //Random values for hash function that  will be determined at the start of program
-    static int a = getRandomInt(1,100);
-    static int b = getRandomInt(1,100);
-    static int p = getRandomInt(1,100);
+    static int a = 5;
+    static int b = 5;
+    static int p = 5;
 
     int hashedVal = (a * key + b) % p % size;
     return hashedVal;
 }
 
-int Hash::multiplicative(int key)
+int Hash::multiplicative(const int& key) const
 {
     static double A = getRandomInt(1,1000)/1000.00; // decided at the start of the program
     int hashedVal = double(key * A - int(key*A)) * size;
     return hashedVal;
 }
 
-void Hash::printTable()
+void Hash::printTable() const
 {
     if (collisionHandling != 's')   //Seperate  chaining
     {
@@ -240,7 +279,7 @@ void Hash::printTable()
         cout << "{" << endl;
         for (int i = 0; i < size; i++)
         {
-            Node* elem = seperateChainingLists[i];
+            Node* elem = separateChainingLists[i];
             while (elem->next)
             {
                 cout << elem->value << "->";
@@ -248,5 +287,6 @@ void Hash::printTable()
             }
             cout << elem->value << endl;
         }
+        cout << "}";
     }
 }

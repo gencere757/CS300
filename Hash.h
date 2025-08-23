@@ -16,25 +16,27 @@ struct Node
 class Hash {
 public:
     Hash();
-    void insert(int elem);
-    bool deleteElem(int elem);
-    void printTable();
+    void insert(const int& elem);
+    bool deleteElem(const int& elem);
+    void printTable() const;
 
     void setHashingType();
     void changeParameters(char hashType);
 
 private:
-    bool search(int elem);   //Search  for a particular element, return true if found and false if not found
+    bool search(const int& elem) const;   //Search  for a particular element, return true if found and false if not found
     void resize();  //Resize the table
-    int modulus(int key);   //Hashes the given key according to modulus hashing
-    int multiplicative(int key); // hashes given key according to multiplicative hashing
+    int modulus(const int& key) const;   //Hashes the given key according to modulus hashing
+    int multiplicative(const int& key) const; // hashes given key according to multiplicative hashing
 
 
     int* hashedElements;    //Array containing the elements
-    Node** seperateChainingLists;    //An array of linked lists to be used when using seperate chaining method
+    Node** separateChainingLists;    //An array of linked lists to be used when using separate chaining method
     int size;   //Size of the table
-    char hashType;  //o -> modulus hashing, u -> multiplacitive hashing
-    char collisionHandling; //l -> linear probing, q -> quadratic probing, s -> seperate chaining, d -> double hashing
+    int usedSize;   //Used number of slots
+    double loadFactor;  //How full the table is
+    char hashType;  //o -> modulus hashing, u -> multiplicative hashing
+    char collisionHandling; //l -> linear probing, q -> quadratic probing, s -> separate chaining, d -> double hashing
 };
 
 
