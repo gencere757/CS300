@@ -11,6 +11,7 @@ struct Node
     Node* next;
     Node();
     Node(int valueOfNode, Node* nextNode) : value(valueOfNode), next(nextNode){}
+
 };
 
 class Hash {

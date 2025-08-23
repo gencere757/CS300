@@ -123,7 +123,7 @@ void Hash::insert(const int& elem)
     loadFactor = double(usedSize) / size;
     if (loadFactor > 0.7)
     {
-        resize();
+        resize('e');
     }
 }
 
@@ -279,7 +279,52 @@ void Hash::resize(char type)
     }
     else if (type == 's')   //Shrink
     {
+        if (collisionHandling == 's')
+        {
+            Node** oldArray = new Node*[size];
+            for (int i = 0; i < size; i++)  //Iterate over each element in array
+            {
+                Node* head = separateChainingLists[i];
+                Node* current = head;
+                Node* newCurrent = oldArray[i];
+                if (!current)
+                {
+                    newCurrent = nullptr;
+                    continue;
+                }
+                while (current->next)   //Iterate over each element in linked list
+                {
+                    newCurrent->next = new Node(current->value, current->next);
+                    current = current->next;
+                    newCurrent = newCurrent->next;
+                }
+                newCurrent->next = new Node(current->value, nullptr);
+            }
+            //Delete old array
+            for (int i = 0; i < size; i++)  //Iterate over each element in array
+            {
+                Node* head = separateChainingLists[i];
+                Node* current = head;
+                if (!current)
+                {
+                    delete current;
+                    continue;
+                }
+                while (current->next)   //Iterate over each element in linked list
+                {
+                    Node* temp = current;
+                    current = current->next;
+                    delete temp;
+                }
+                delete current;
+            }
+            delete separateChainingLists;
+            separateChainingLists = new Node*[size / 2 + 1];
+        }
+        else
+        {
 
+        }
     }
 }
 
