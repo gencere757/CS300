@@ -23,6 +23,8 @@ int getRandomInt(int min, int max) {
 Hash::Hash()
 {
     size = 10;
+    loadFactor = 0;
+    usedSize = 0;
     cout << "Enter hashing type:" << endl;
     cin >> hashType;
     cout << "Enter collision handling method:";
@@ -87,17 +89,18 @@ void Hash::insert(int elem)
                 {
                     cout << "Collision happened," << "table[" << idx << "] is full." << endl;
                     cout << "Applying linear probing..." << endl;
-                    idx++;
+                    idx = (idx + 1) % size;
                 }
             }
             else if (collisionHandling == 'q')  //Quadratic Probing
             {
-                int iteration = 1;
+                int iteration = 0;
                 while (hashedElements[idx] != -1)
                 {
                     cout << "Collision happened," << "table[" << idx << "] is full." << endl;
                     cout << "Applying quadratic probing..." << endl;
-                    idx+= iteration * iteration;
+                    idx = (idx + iteration * iteration) % size;
+                    iteration++;
                 }
             }
             else if (collisionHandling == 'd')  //Double Hashing
@@ -115,14 +118,47 @@ void Hash::insert(int elem)
         }
         hashedElements[idx] = elem; //Insert the element
     }
+    usedSize++;
+    loadFactor = double(usedSize) / size;
 }
 
 bool Hash::deleteElem(int elem)
 {
-    if (!search(elem))
+    if (!search(elem))  //If element not in table
     {
+        cout << "The element could not be found!" << endl;
         return false;
     }
+    //If element is found, get its index
+    int idx = 0;
+    if (hashType == 'o')
+    {
+        idx = modulus(elem);
+    }
+    else if (hashType == 'u')
+    {
+        idx = multiplicative(elem);
+    }
+    //Depending on collision handling type, delete the element
+    if (collisionHandling == 's')
+    {
+        Node* head = seperateChainingLists[idx];    //Head of the current linked list
+        Node* current = head;   //Current node we're looking at
+        while (current->next->value != elem)  //Iterate until finding the correct node
+        {
+            current = current->next;
+        }
+        //Rewire the nodes and delete the correct node
+        Node* toBeDeleted = current->next;
+        current->next = current->next->next;
+        toBeDeleted->next = nullptr;
+        delete toBeDeleted;
+    }
+    else   //Linear probing etc.
+    {
+        hashedElements[idx] = -1;   //Delete the element
+    }
+
 }
 
 bool Hash::search(int elem)
@@ -164,7 +200,7 @@ bool Hash::search(int elem)
         return false;
     }
     if (collisionHandling == 'q') {
-        int indexStart = hashIndex, iteration = 1;
+        int iteration = 1;
         while (hashedElements[hashIndex] != -1)
         {
             if (hashedElements[hashIndex] == elem)
@@ -204,14 +240,15 @@ bool Hash::search(int elem)
 
 void Hash::resize()
 {
+
 }
 
 int Hash::modulus(int key)
 {
     //Random values for hash function that  will be determined at the start of program
-    static int a = getRandomInt(1,100);
-    static int b = getRandomInt(1,100);
-    static int p = getRandomInt(1,100);
+    static int a = 5;
+    static int b = 5;
+    static int p = 5;
 
     int hashedVal = (a * key + b) % p % size;
     return hashedVal;
@@ -248,5 +285,6 @@ void Hash::printTable()
             }
             cout << elem->value << endl;
         }
+        cout << "}";
     }
 }

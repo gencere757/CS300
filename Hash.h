@@ -33,6 +33,8 @@ private:
     int* hashedElements;    //Array containing the elements
     Node** seperateChainingLists;    //An array of linked lists to be used when using seperate chaining method
     int size;   //Size of the table
+    int usedSize;   //Used number of slots
+    double loadFactor;  //How full the table is
     char hashType;  //o -> modulus hashing, u -> multiplacitive hashing
     char collisionHandling; //l -> linear probing, q -> quadratic probing, s -> seperate chaining, d -> double hashing
 };
