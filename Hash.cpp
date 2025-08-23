@@ -49,7 +49,7 @@ Hash::Hash()
     }
 }
 
-void Hash::insert(const int& elem)
+void Hash::insert(const int& elem, bool resize)
 {
     int idx = 0;    //Place we will insert to
     //Determining idx depending on hashing type
@@ -121,7 +121,7 @@ void Hash::insert(const int& elem)
     }
     usedSize++;
     loadFactor = double(usedSize) / size;
-    if (loadFactor > 0.7)
+    if (loadFactor > 0.7 && resize)
     {
         resize('e');
     }
@@ -273,7 +273,7 @@ void Hash::resize(char type)
             hashedElements = new int[size*2];
             for (int i = 0; i < size; i++) //Initialize the rest
             {
-                insert(newArray[i]);
+                insert(newArray[i], false);
             }
             delete newArray;
         }
@@ -338,10 +338,10 @@ void Hash::resize(char type)
                 }
                 while (current->next)   //Iterate over each element in linked list
                 {
-                    insert(current->value);
+                    insert(current->value, false);
                     current = current->next;
                 }
-                insert(current->value);
+                insert(current->value, false);
             }
 
             // Delete oldArray
@@ -374,7 +374,7 @@ void Hash::resize(char type)
             delete hashedElements;
             hashedElements = new int[size / 2];
             for (int i = 0; i < size; i++) {
-                insert(newArray[i]);
+                insert(newArray[i], false);
             }
             delete newArray;
         }

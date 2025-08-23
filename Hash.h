@@ -17,7 +17,7 @@ struct Node
 class Hash {
 public:
     Hash();
-    void insert(const int& elem);
+    void insert(const int& elem, bool resize = true);
     bool deleteElem(const int& elem);
     void printTable() const;
 
