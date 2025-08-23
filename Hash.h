@@ -25,7 +25,7 @@ public:
 
 private:
     bool search(const int& elem) const;   //Search  for a particular element, return true if found and false if not found
-    void resize();  //Resize the table
+    void resize(char type);  //Resize the table
     int modulus(const int& key) const;   //Hashes the given key according to modulus hashing
     int multiplicative(const int& key) const; // hashes given key according to multiplicative hashing
 

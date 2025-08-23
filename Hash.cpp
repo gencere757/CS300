@@ -121,8 +121,9 @@ void Hash::insert(const int& elem)
     }
     usedSize++;
     loadFactor = double(usedSize) / size;
-    if (loadFactor > 0.7) {
-
+    if (loadFactor > 0.7)
+    {
+        resize();
     }
 }
 
@@ -242,37 +243,44 @@ bool Hash::search(const int& elem) const
     return false;
 }
 
-void Hash::resize()
+void Hash::resize(char type)
 {
-    if (collisionHandling == 's')
+    if (type == 'e')    //Enlarge
     {
-        Node** newArray = new Node*[size * 2];  //Create a new array of double size
-        for (int i = 0; i < size; i++)  //Copy current elems
+        if (collisionHandling == 's')
         {
-            newArray[i] = separateChainingLists[i];
+            Node** newArray = new Node*[size * 2];  //Create a new array of double size
+            for (int i = 0; i < size; i++)  //Copy current elems
+            {
+                newArray[i] = separateChainingLists[i];
+            }
+            for (int i = size; i < size*2; i++) //Initialize the rest
+            {
+                newArray[i] = nullptr;
+            }
+            delete separateChainingLists;
+            separateChainingLists = newArray;
         }
-        for (int i = size; i < size*2; i++) //Initialize the rest
+        else
         {
-            newArray[i] = nullptr;
+            int* newArray = new int[size * 2];  //Create a new array of double size
+            for (int i = 0; i < size; i++)  //Copy current elems
+            {
+                newArray[i] = hashedElements[i];
+            }
+            for (int i = size; i < size*2; i++) //Initialize the rest
+            {
+                newArray[i] = -1;
+            }
+            delete hashedElements;
+            hashedElements = newArray;
         }
-        delete separateChainingLists;
-        separateChainingLists = newArray;
+        size *= 2;
     }
-    else
+    else if (type == 's')   //Shrink
     {
-        int* newArray = new int[size * 2];  //Create a new array of double size
-        for (int i = 0; i < size; i++)  //Copy current elems
-        {
-            newArray[i] = hashedElements[i];
-        }
-        for (int i = size; i < size*2; i++) //Initialize the rest
-        {
-            newArray[i] = -1;
-        }
-        delete hashedElements;
-        hashedElements = newArray;
+
     }
-    size *= 2;
 }
 
 int Hash::modulus(const int& key) const
