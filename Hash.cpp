@@ -247,6 +247,7 @@ void Hash::resize(char type)
 {
     if (type == 'e')    //Enlarge
     {
+        cout << "Size too small. Enlarging..." << endl;
         if (collisionHandling == 's')
         {
             Node** newArray = new Node*[size * 2];  //Create a new array of double size
@@ -276,9 +277,12 @@ void Hash::resize(char type)
             hashedElements = newArray;
         }
         size *= 2;
+        cout << "Size increased to double" << endl;
+
     }
     else if (type == 's')   //Shrink
     {
+        cout << "Size too large. Shrinking..." << endl;
         if (collisionHandling == 's')
         {
             Node** oldArray = new Node*[size];
@@ -362,6 +366,7 @@ void Hash::resize(char type)
         {
 
         }
+        cout << "Size reduced to half" << endl;
     }
 }
 
