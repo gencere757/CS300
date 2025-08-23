@@ -107,13 +107,12 @@ void Hash::insert(const int& elem)
             }
             else if (collisionHandling == 'd')  //Double Hashing
             {
-                int i = 0;
-                int stepForDoubleHashing = 1 + (elem %  (size - 1));
+                int i = 0, h2 = elem % 7; // we picked m = 7 for h2(k)= k mod m
                 while (hashedElements[idx] != -1)
                 {
                     cout << "Collision happened," << "table[" << idx << "] is full." << endl;
                     cout << "Applying double hashing..." << endl;
-                    idx = (idx + (i*stepForDoubleHashing)) % size;
+                    idx = (idx + i * h2) % size; // double hashing  = h(k) + i(h2(k))
                     i++;
                 }
             }
@@ -122,9 +121,8 @@ void Hash::insert(const int& elem)
     }
     usedSize++;
     loadFactor = double(usedSize) / size;
-    if (loadFactor > 0.7)
-    {
-        resize();
+    if (loadFactor > 0.7) {
+
     }
 }
 
