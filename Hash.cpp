@@ -97,7 +97,7 @@ void Hash::insert(const int& elem, bool resizing)
             }
             else if (collisionHandling == 'q')  //Quadratic Probing
             {
-                int iteration = 0;
+                int iteration = 1;
                 while (hashedElements[idx] != -1)
                 {
                     cout << "Collision happened," << "table[" << idx << "] is full." << endl;
@@ -108,7 +108,7 @@ void Hash::insert(const int& elem, bool resizing)
             }
             else if (collisionHandling == 'd')  //Double Hashing
             {
-                int i = 0, h2 = elem % 7; // we picked m = 7 for h2(k)= k mod m
+                int i = 1, h2 = 1 + (elem % (size - 1)); // h2(k)= k mod m
                 while (hashedElements[idx] != -1)
                 {
                     cout << "Collision happened," << "table[" << idx << "] is full." << endl;
