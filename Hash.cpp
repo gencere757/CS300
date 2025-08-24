@@ -84,11 +84,11 @@ void Hash::insert(const int& elem, bool resizing)
     }
     else   //Then we will use normal integer array
     {
-        if (hashedElements[idx] != -1)  //If we need to do collision handling
+        if (hashedElements[idx] != -1 && hashedElements[idx] != -2)  //If we need to do collision handling
         {
             if (collisionHandling == 'l')   //Linear Probing
             {
-                while (hashedElements[idx] != -1)
+                while (hashedElements[idx] != -1 && hashedElements[idx] != -2)
                 {
                     cout << "Collision happened," << "table[" << idx << "] is full." << endl;
                     cout << "Applying linear probing..." << endl;
@@ -98,7 +98,7 @@ void Hash::insert(const int& elem, bool resizing)
             else if (collisionHandling == 'q')  //Quadratic Probing
             {
                 int iteration = 1;
-                while (hashedElements[idx] != -1)
+                while (hashedElements[idx] != -1 && hashedElements[idx] != -2)
                 {
                     cout << "Collision happened," << "table[" << idx << "] is full." << endl;
                     cout << "Applying quadratic probing..." << endl;
@@ -109,7 +109,7 @@ void Hash::insert(const int& elem, bool resizing)
             else if (collisionHandling == 'd')  //Double Hashing
             {
                 int i = 1, h2 = 1 + (elem % (size - 1)); // h2(k)= k mod m
-                while (hashedElements[idx] != -1)
+                while (hashedElements[idx] != -1 && hashedElements[idx] != -2)
                 {
                     cout << "Collision happened," << "table[" << idx << "] is full." << endl;
                     cout << "Applying double hashing..." << endl;
