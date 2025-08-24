@@ -38,7 +38,6 @@ private:
     double loadFactor;  //How full the table is
     char hashType;  //o -> modulus hashing, u -> multiplicative hashing
     char collisionHandling; //l -> linear probing, q -> quadratic probing, s -> separate chaining, d -> double hashing
-    int maxProbe = 0;
 };
 
 
