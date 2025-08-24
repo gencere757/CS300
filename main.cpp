@@ -26,6 +26,10 @@ int main()
             cout << "Successfully deleted: " << i << endl;
         }
     }
+    for (int i = 1; i < 60; i++)
+    {
+        table.deleteElem(i);
+    }
     timePoint end = high_resolution_clock::now();
     duration timeTaken = duration_cast<microseconds>(end - start);
     table.printTable();
