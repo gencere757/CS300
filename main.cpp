@@ -21,6 +21,11 @@ int main()
     {
         table.insert(i);
     }
+    for (int i = 1; i < 60; i++) {
+        if (table.deleteElem(i)) {
+            cout << "Successfully deleted: " << i << endl;
+        }
+    }
     timePoint end = high_resolution_clock::now();
     duration timeTaken = duration_cast<microseconds>(end - start);
     table.printTable();
