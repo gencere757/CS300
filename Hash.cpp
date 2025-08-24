@@ -36,7 +36,7 @@ Hash::Hash()
         separateChainingLists = new Node*[size];
         for (int i = 0; i < size; i++)
         {
-            separateChainingLists[i] = new Node(-1, nullptr);
+            separateChainingLists[i] = nullptr;
         }
     }
     else   //We will use normal integer array
@@ -52,7 +52,6 @@ Hash::Hash()
 void Hash::insert(const int& elem, bool resizing)
 {
     int idx = 0;    //Place we will insert to
-    int probeCount = 0;
     //Determining idx depending on hashing type
     if (hashType == 'o')    //Modulus Hashing
     {
@@ -91,12 +90,9 @@ void Hash::insert(const int& elem, bool resizing)
             {
                 while (hashedElements[idx] != -1)
                 {
-                    probeCount++;
+                    cout << "Collision happened," << "table[" << idx << "] is full." << endl;
+                    cout << "Applying linear probing..." << endl;
                     idx = (idx + 1) % size;
-                }
-                if (probeCount > 0) {
-                    cout << "Collision happened, index was full." << endl;
-                    cout << "Applied linear probing " << probeCount << " times." << endl;
                 }
             }
             else if (collisionHandling == 'q')  //Quadratic Probing
@@ -104,13 +100,10 @@ void Hash::insert(const int& elem, bool resizing)
                 int iteration = 0;
                 while (hashedElements[idx] != -1)
                 {
-                    probeCount++;
+                    cout << "Collision happened," << "table[" << idx << "] is full." << endl;
+                    cout << "Applying quadratic probing..." << endl;
                     idx = (idx + iteration * iteration) % size;
                     iteration++;
-                }
-                if (probeCount > 0) {
-                    cout << "Collision happened, index was full." << endl;
-                    cout << "Applied quadratic probing " << probeCount << " times." << endl;
                 }
             }
             else if (collisionHandling == 'd')  //Double Hashing
@@ -118,25 +111,21 @@ void Hash::insert(const int& elem, bool resizing)
                 int i = 0, h2 = elem % 7; // we picked m = 7 for h2(k)= k mod m
                 while (hashedElements[idx] != -1)
                 {
-                    probeCount++;
+                    cout << "Collision happened," << "table[" << idx << "] is full." << endl;
+                    cout << "Applying double hashing..." << endl;
                     idx = (idx + i * h2) % size; // double hashing  = h(k) + i(h2(k))
                     i++;
-                }
-                if (probeCount > 0) {
-                    cout << "Collision happened, index was full." << endl;
-                    cout << "Applied double hashing " << probeCount << " times." << endl;
                 }
             }
         }
         hashedElements[idx] = elem; //Insert the element
-        cout << "Probe count for element " << elem << " : " << probeCount << " times." << endl;
         usedSize++;
     }
 
     if (resizing)
     {
         loadFactor = double(usedSize) / size;
-        if (loadFactor > 0.9)
+        if (loadFactor > 0.6)
         {
             resize('e');
         }
@@ -179,6 +168,7 @@ bool Hash::deleteElem(const int& elem)
     {
         hashedElements[idx] = -2;   //Delete the element
     }
+    cout << "Deleted the element: " << elem << endl;
     return true;
 }
 
@@ -266,84 +256,39 @@ void Hash::resize(char type)
         cout << "Size too small. Enlarging..." << endl;
         if (collisionHandling == 's')   //Separate Chaining
         {
-            Node** oldArray = new Node*[size];  //Create a copy
-            //Copying the elements
-            for (int i = 0; i < size; i++)  //Iterate over each element in array
-            {
-                Node* head = separateChainingLists[i];
-                Node* current = head;
-                if (!current)   //If current is empty
-                {
-                    oldArray[i] = nullptr;
-                    continue;
-                }
-                oldArray[i] = new Node(separateChainingLists[i]->value,nullptr);
-                while (current->next)   //Iterate over each element in linked list
-                {
-                    oldArray[i]->next = new Node(current->value, nullptr);
-                    current = current->next;
-                    oldArray[i] = oldArray[i]->next;
-                }
-                oldArray[i]->next = new Node(current->value, nullptr);
-            }
-            //Deep delete old array
-            for (int i = 0; i < size; i++)  //Iterate over each element in array
-            {
-                Node* head = separateChainingLists[i];
-                Node* current = head;
-                if (!current)   //If current is empty
-                {
-                    delete current;
-                    continue;
-                }
-                while (current->next)   //Iterate over each element in linked list
-                {
-                    Node* temp = current;
-                    current = current->next;
-                    delete temp;
-                }
-                delete current;
-            }
-            delete[] separateChainingLists;
-            separateChainingLists = new Node*[size * 2];    //Recreate the array with double size
+            // Save reference to old data
+            Node** oldLists = separateChainingLists;
+            int oldSize = size;
 
-            // Re-insert elements into resized table
-            for (int i = 0; i < size; i++)
-            {
-                Node* head = oldArray[i];
-                Node* current = head;
-                Node* newCurrent = separateChainingLists[i];
-                if (!current) // null node case
-                {
-                    newCurrent = nullptr;
-                    continue;
-                }
-                while (current->next)   //Iterate over each element in linked list
-                {
+            // Create new larger table
+            size *= 2;
+            separateChainingLists = new Node*[size];
+            for (int i = 0; i < size; i++) {
+                separateChainingLists[i] = nullptr;
+            }
+
+            // Reset usedSize for reinsertion
+            usedSize = 0;
+
+            // Re-insert all elements from old table
+            for (int i = 0; i < oldSize; i++) {
+                Node* current = oldLists[i];
+                while (current != nullptr) {
                     insert(current->value, false);
                     current = current->next;
                 }
-                insert(current->value, false);
             }
 
-            // Deep delete oldArray
-            for (int i = 0; i < size; i++)  //Iterate over each element in array
-            {
-                Node* head = oldArray[i];
-                Node* current = head;
-                if (!current)
-                {
-                    delete current;
-                    continue;
-                }
-                while (current->next)   //Iterate over each element in linked list
-                {
+            // Clean up old table
+            for (int i = 0; i < oldSize; i++) {
+                Node* current = oldLists[i];
+                while (current != nullptr) {
                     Node* temp = current;
                     current = current->next;
                     delete temp;
                 }
-                delete current;
             }
+            delete[] oldLists;
         }
         else   //Not separate chaining
         {
@@ -497,7 +442,7 @@ int Hash::multiplicative(const int& key) const
 
 void Hash::printTable() const
 {
-    if (collisionHandling != 's')
+    if (collisionHandling != 's')   //Not Separate  chaining
     {
         cout << "[";
         for (int i = 0; i < size - 1; i++)
@@ -506,12 +451,17 @@ void Hash::printTable() const
         }
         cout << hashedElements[size - 1] << "]";
     }
-    else //Separate  chaining
+    else
     {
         cout << "{" << endl;
         for (int i = 0; i < size; i++)
         {
             Node* elem = separateChainingLists[i];
+            if (!elem)
+            {
+                cout << "NULL" << endl;
+                continue;
+            }
             while (elem->next)
             {
                 cout << elem->value << "->";
