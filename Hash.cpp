@@ -52,6 +52,7 @@ Hash::Hash()
 void Hash::insert(const int& elem, bool resizing)
 {
     int idx = 0;    //Place we will insert to
+    int probeCount = 0;
     //Determining idx depending on hashing type
     if (hashType == 'o')    //Modulus Hashing
     {
@@ -90,9 +91,12 @@ void Hash::insert(const int& elem, bool resizing)
             {
                 while (hashedElements[idx] != -1)
                 {
-                    cout << "Collision happened," << "table[" << idx << "] is full." << endl;
-                    cout << "Applying linear probing..." << endl;
+                    probeCount++;
                     idx = (idx + 1) % size;
+                }
+                if (probeCount > 0) {
+                    cout << "Collision happened, index was full." << endl;
+                    cout << "Applied linear probing " << probeCount << " times." << endl;
                 }
             }
             else if (collisionHandling == 'q')  //Quadratic Probing
@@ -100,10 +104,13 @@ void Hash::insert(const int& elem, bool resizing)
                 int iteration = 0;
                 while (hashedElements[idx] != -1)
                 {
-                    cout << "Collision happened," << "table[" << idx << "] is full." << endl;
-                    cout << "Applying quadratic probing..." << endl;
+                    probeCount++;
                     idx = (idx + iteration * iteration) % size;
                     iteration++;
+                }
+                if (probeCount > 0) {
+                    cout << "Collision happened, index was full." << endl;
+                    cout << "Applied quadratic probing " << probeCount << " times." << endl;
                 }
             }
             else if (collisionHandling == 'd')  //Double Hashing
@@ -111,21 +118,25 @@ void Hash::insert(const int& elem, bool resizing)
                 int i = 0, h2 = elem % 7; // we picked m = 7 for h2(k)= k mod m
                 while (hashedElements[idx] != -1)
                 {
-                    cout << "Collision happened," << "table[" << idx << "] is full." << endl;
-                    cout << "Applying double hashing..." << endl;
+                    probeCount++;
                     idx = (idx + i * h2) % size; // double hashing  = h(k) + i(h2(k))
                     i++;
+                }
+                if (probeCount > 0) {
+                    cout << "Collision happened, index was full." << endl;
+                    cout << "Applied double hashing " << probeCount << " times." << endl;
                 }
             }
         }
         hashedElements[idx] = elem; //Insert the element
+        cout << "Probe count for element " << elem << " : " << probeCount << " times." << endl;
         usedSize++;
     }
 
     if (resizing)
     {
         loadFactor = double(usedSize) / size;
-        if (loadFactor > 0.6)
+        if (loadFactor > 0.9)
         {
             resize('e');
         }
@@ -484,7 +495,7 @@ int Hash::multiplicative(const int& key) const
 
 void Hash::printTable() const
 {
-    if (collisionHandling != 's')   //Separate  chaining
+    if (collisionHandling != 's')
     {
         cout << "[";
         for (int i = 0; i < size - 1; i++)
@@ -493,7 +504,7 @@ void Hash::printTable() const
         }
         cout << hashedElements[size - 1] << "]";
     }
-    else
+    else //Separate  chaining
     {
         cout << "{" << endl;
         for (int i = 0; i < size; i++)
