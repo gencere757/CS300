@@ -134,21 +134,13 @@ void Hash::insert(const int& elem, bool resizing)
 
 bool Hash::deleteElem(const int& elem)
 {
-    if (!search(elem))  //If element not in table
+    int idx = search(elem);
+    if (idx == -1)  //If element not in table
     {
-        cout << "The element could not be found!" << endl;
+        cout << "The element" << elem <<"could not be found!" << endl;
         return false;
     }
-    //If element is found, get its index
-    int idx = 0;
-    if (hashType == 'o')
-    {
-        idx = modulus(elem);
-    }
-    else if (hashType == 'u')
-    {
-        idx = multiplicative(elem);
-    }
+
     //Depending on collision handling type, delete the element
     if (collisionHandling == 's')
     {
@@ -169,10 +161,16 @@ bool Hash::deleteElem(const int& elem)
         hashedElements[idx] = -2;   //Delete the element
     }
     cout << "Deleted the element: " << elem << endl;
+    usedSize--;
+    loadFactor = double(usedSize) / size;
+    if (loadFactor < 0.3)
+    {
+        resize('s');
+    }
     return true;
 }
 
-bool Hash::search(const int& elem) const
+int Hash::search(const int& elem) const
 {
     int hashIndex = 0;
     if (hashType == 'o')    //Modulus Hashing
@@ -189,10 +187,10 @@ bool Hash::search(const int& elem) const
         while (current != nullptr)
         {
             if (current->value == elem)
-                return true;
+                return hashIndex;
             current = current->next;
         }
-        return false;
+        return -1;
     }
     if (collisionHandling == 'l') {
         int indexStart = hashIndex;
@@ -200,7 +198,7 @@ bool Hash::search(const int& elem) const
         {
             if (hashedElements[hashIndex] == elem)
             {
-                return true;
+                return hashIndex;
             }
             hashIndex = (hashIndex + 1) % size; //calculate next index tried according to linear probing
             if (hashIndex == indexStart)
@@ -208,7 +206,7 @@ bool Hash::search(const int& elem) const
                 break;
             }
         }
-        return false;
+        return -1;
     }
     if (collisionHandling == 'q') {
         int iteration = 1;
@@ -216,7 +214,7 @@ bool Hash::search(const int& elem) const
         {
             if (hashedElements[hashIndex] == elem)
             {
-                return true;
+                return hashIndex;
             }
             hashIndex = (hashIndex + iteration * iteration) % size; // calculate next index tried according to quadratic probing
             iteration++;
@@ -225,7 +223,7 @@ bool Hash::search(const int& elem) const
                 break;
             }
         }
-        return false;
+        return -1;
     }
     if (collisionHandling == 'd')
     {
@@ -235,7 +233,7 @@ bool Hash::search(const int& elem) const
         {
             if (hashedElements[hashIndex] == elem)
             {
-                return true;
+                return hashIndex;
             }
             hashIndex = (hashIndex + i * doubleHashStep) % size;
             i++;
@@ -244,9 +242,9 @@ bool Hash::search(const int& elem) const
                 break;
             }
         }
-        return false;
+        return -1;
     }
-    return false;
+    return -1;
 }
 
 void Hash::resize(char type)
