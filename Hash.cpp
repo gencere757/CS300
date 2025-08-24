@@ -295,7 +295,9 @@ void Hash::resize(char type)
             int* copy = new int[size * 2];  //Create copy
             for (int i = 0; i < size; i++)  //Copy current elems
             {
-                copy[i] = hashedElements[i];
+                if (hashedElements[i] == -1 && hashedElements[i] != -2) {
+                    copy[i] = hashedElements[i];
+                }
             }
             delete hashedElements;
             hashedElements = new int[size*2];
@@ -403,7 +405,7 @@ void Hash::resize(char type)
         {
             int* newArray = new int[size / 2];
             for (int i = 0; i < size; i++) {
-                if (hashedElements[i] != -1) {
+                if (hashedElements[i] != -1 && hashedElements[i] != -2) {
                     newArray[i] = hashedElements[i];
                 }
             }
