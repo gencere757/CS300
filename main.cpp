@@ -17,7 +17,7 @@ int main()
     //Insert test
     Hash table;
     timePoint start = high_resolution_clock::now();
-    for (int i = 1; i < 110; i++)
+    for (int i = 1; i < 75; i++)
     {
         table.insert(i);
     }

@@ -49,7 +49,7 @@ Hash::Hash()
     }
 }
 
-void Hash::insert(const int& elem, bool resize)
+void Hash::insert(const int& elem, bool resizing)
 {
     int idx = 0;    //Place we will insert to
     //Determining idx depending on hashing type
@@ -66,8 +66,12 @@ void Hash::insert(const int& elem, bool resize)
     //Inserting and handling collisions
     if (collisionHandling == 's')   //If seperate chaining, we will use linked list array
     {
-
-        if (separateChainingLists[idx]->value != -1)  //If we need to do collision handling
+        if (!separateChainingLists[idx])    //Inserting right away
+        {
+            separateChainingLists[idx] = new Node(elem, nullptr);   //Insert to array
+            usedSize++;
+        }
+        else   //Need to append to list
         {
             Node* current = separateChainingLists[idx];
             while (current->next)   //Iterate until finding last node on the chain
@@ -75,10 +79,7 @@ void Hash::insert(const int& elem, bool resize)
                 current = current->next;
             }
             current->next = new Node(elem, nullptr);    //Insert to the end of the chain
-        }
-        else   //If we can insert right away (i.e. spot is vacant)
-        {
-            separateChainingLists[idx] = new Node(elem, nullptr);   //Insert to array
+            usedSize++;
         }
     }
     else   //Then we will use normal integer array
@@ -118,12 +119,16 @@ void Hash::insert(const int& elem, bool resize)
             }
         }
         hashedElements[idx] = elem; //Insert the element
+        usedSize++;
     }
-    usedSize++;
-    loadFactor = double(usedSize) / size;
-    if (loadFactor > 0.7 && resize)
+
+    if (resizing)
     {
-        resize('e');
+        loadFactor = double(usedSize) / size;
+        if (loadFactor > 0.6)
+        {
+            resize('e');
+        }
     }
 }
 
@@ -248,33 +253,34 @@ void Hash::resize(char type)
     if (type == 'e')    //Enlarge
     {
         cout << "Size too small. Enlarging..." << endl;
-        if (collisionHandling == 's')
-            {
-            Node** oldArray = new Node*[size];
+        if (collisionHandling == 's')   //Separate Chaining
+        {
+            Node** oldArray = new Node*[size];  //Create a copy
+            //Copying the elements
             for (int i = 0; i < size; i++)  //Iterate over each element in array
             {
                 Node* head = separateChainingLists[i];
                 Node* current = head;
-                Node* newCurrent = oldArray[i];
-                if (!current)
+                if (!current)   //If current is empty
                 {
-                    newCurrent = nullptr;
+                    oldArray[i] = nullptr;
                     continue;
                 }
+                oldArray[i] = new Node(separateChainingLists[i]->value,nullptr);
                 while (current->next)   //Iterate over each element in linked list
                 {
-                    newCurrent->next = new Node(current->value, current->next);
+                    oldArray[i]->next = new Node(current->value, nullptr);
                     current = current->next;
-                    newCurrent = newCurrent->next;
+                    oldArray[i] = oldArray[i]->next;
                 }
-                newCurrent->next = new Node(current->value, nullptr);
+                oldArray[i]->next = new Node(current->value, nullptr);
             }
-            //Delete old array
+            //Deep delete old array
             for (int i = 0; i < size; i++)  //Iterate over each element in array
             {
                 Node* head = separateChainingLists[i];
                 Node* current = head;
-                if (!current)
+                if (!current)   //If current is empty
                 {
                     delete current;
                     continue;
@@ -287,11 +293,12 @@ void Hash::resize(char type)
                 }
                 delete current;
             }
-            delete separateChainingLists;
-            separateChainingLists = new Node*[size * 2];
+            delete[] separateChainingLists;
+            separateChainingLists = new Node*[size * 2];    //Recreate the array with double size
 
             // Re-insert elements into resized table
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < size; i++)
+            {
                 Node* head = oldArray[i];
                 Node* current = head;
                 Node* newCurrent = separateChainingLists[i];
@@ -308,7 +315,7 @@ void Hash::resize(char type)
                 insert(current->value, false);
             }
 
-            // Delete oldArray
+            // Deep delete oldArray
             for (int i = 0; i < size; i++)  //Iterate over each element in array
             {
                 Node* head = oldArray[i];
@@ -327,26 +334,34 @@ void Hash::resize(char type)
                 delete current;
             }
         }
-        else
+        else   //Not separate chaining
         {
-            int* newArray = new int[size * 2];  //Create a new array of double size
+            int* copy = new int[size * 2];  //Create copy
             for (int i = 0; i < size; i++)  //Copy current elems
             {
-                newArray[i] = hashedElements[i];
+                copy[i] = hashedElements[i];
             }
             delete hashedElements;
             hashedElements = new int[size*2];
-            for (int i = 0; i < size; i++) //Initialize the rest
+            size *= 2;
+            loadFactor = 0;
+            for (int i = 0; i < size; i++) //Initialize the new array
             {
-                insert(newArray[i], false);
+                hashedElements[i] = -1;
             }
-            delete newArray;
+            for (int i = 0; i < size/2; i++) //Re-insert the old elements
+            {
+                if (copy[i] != -1)
+                {
+                    insert(copy[i], false);
+                }
+            }
+            delete copy;    //Clear the copy
         }
-        size *= 2;
+        loadFactor = double(usedSize) / size;
         cout << "Size increased to double" << endl;
-
     }
-    else if (type == 's')   //Shrink
+    else if (type == 's')   //Shrinking
     {
         cout << "Size too large. Shrinking..." << endl;
         if (collisionHandling == 's')
@@ -443,6 +458,8 @@ void Hash::resize(char type)
             }
             delete newArray;
         }
+        size /= 2;
+        loadFactor = double(usedSize) / size;
         cout << "Size reduced to half" << endl;
     }
 }
