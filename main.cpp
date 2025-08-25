@@ -17,21 +17,22 @@ int main()
     //Insert test
     Hash table;
     timePoint start = high_resolution_clock::now();
-    for (int i = 1; i < 50; i++)
+    for (int i = 1; i < 250; i++)
     {
         table.insert(i);
     }
     timePoint end = high_resolution_clock::now();
     duration timeTaken = duration_cast<microseconds>(end - start);
-    cout << "Total time taken to insert: " << timeTaken.count() << endl;
+    cout << "Total time taken to insert: " << timeTaken.count()/1000000 << endl;
+    table.printTable();
     start = high_resolution_clock::now();
-    for (int i = 1; i < 45; i++)
+    for (int i = 1; i < 110; i++)
     {
         table.deleteElem(i);
     }
     end = high_resolution_clock::now();
     timeTaken = duration_cast<microseconds>(end - start);
     table.printTable();
-    cout << "Total time taken to delete: " << timeTaken.count() << endl;
+    cout << "Total time taken to delete: " << timeTaken.count()/1000000 << endl;
     return 0;
 }

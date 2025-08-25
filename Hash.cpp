@@ -88,20 +88,20 @@ void Hash::insert(const int& elem, bool resizing)
         {
             if (collisionHandling == 'l')   //Linear Probing
             {
+                cout << "Collision happened," << "table[" << idx << "] is full." << endl;
+                cout << "Applying linear probing..." << endl;
                 while (hashedElements[idx] != -1)
                 {
-                    cout << "Collision happened," << "table[" << idx << "] is full." << endl;
-                    cout << "Applying linear probing..." << endl;
                     idx = (idx + 1) % size;
                 }
             }
             else if (collisionHandling == 'q')  //Quadratic Probing
             {
                 int iteration = 0;
+                cout << "Collision happened," << "table[" << idx << "] is full." << endl;
+                cout << "Applying quadratic probing..." << endl;
                 while (hashedElements[idx] != -1)
                 {
-                    cout << "Collision happened," << "table[" << idx << "] is full." << endl;
-                    cout << "Applying quadratic probing..." << endl;
                     idx = (idx + iteration * iteration) % size;
                     iteration++;
                 }
@@ -109,21 +109,22 @@ void Hash::insert(const int& elem, bool resizing)
             else if (collisionHandling == 'd')  //Double Hashing
             {
                 int i = 0, h2 = elem % 7; // we picked m = 7 for h2(k)= k mod m
+                cout << "Collision happened," << "table[" << idx << "] is full." << endl;
+                cout << "Applying double hashing..." << endl;
                 while (hashedElements[idx] != -1)
                 {
-                    cout << "Collision happened," << "table[" << idx << "] is full." << endl;
-                    cout << "Applying double hashing..." << endl;
                     idx = (idx + i * h2) % size; // double hashing  = h(k) + i(h2(k))
                     i++;
                 }
             }
         }
         hashedElements[idx] = elem; //Insert the element
-        usedSize++;
+        cout << "Inserted to index: " << idx << endl;
     }
 
     if (resizing)
     {
+        usedSize++;
         loadFactor = double(usedSize) / size;
         if (loadFactor > 0.6)
         {
@@ -293,21 +294,19 @@ void Hash::resize(char type)
             int* copy = new int[size * 2];  //Create copy
             for (int i = 0; i < size; i++)  //Copy current elems
             {
-                if (hashedElements[i] == -1 || hashedElements[i] != -2) {
-                    copy[i] = hashedElements[i];
-                }
+                copy[i] = hashedElements[i];
             }
             delete hashedElements;
             hashedElements = new int[size*2];
             size *= 2;
-            loadFactor = 0;
+            loadFactor = double(usedSize) / size;
             for (int i = 0; i < size; i++) //Initialize the new array
             {
                 hashedElements[i] = -1;
             }
             for (int i = 0; i < size/2; i++) //Re-insert the old elements
             {
-                if (copy[i] != -1)
+                if (copy[i] != -1 && copy[i] != -2)
                 {
                     insert(copy[i], false);
                 }
@@ -401,18 +400,23 @@ void Hash::resize(char type)
         }
         else // resizing for hashing methods other than separate chaining (array)
         {
-            int* newArray = new int[size / 2];
+            int* newArray = new int[size];
             for (int i = 0; i < size; i++) {
-                if (hashedElements[i] != -1 || hashedElements[i] != -2) {
-                    newArray[i] = hashedElements[i];
-                }
+                newArray[i] = hashedElements[i];
             }
             delete hashedElements;
             hashedElements = new int[size / 2];
+            for (int i = 0; i < size/2; i++)  //Initialize the array again
+            {
+                hashedElements[i] = -1;
+            }
+            //Insert all non zero or tombstone elements.
             for (int i = 0; i < size; i++) {
+                if (newArray[i] != -1 && newArray[i] != -2)
                 insert(newArray[i], false);
             }
-            delete newArray;
+
+            delete[] newArray;
         }
         size /= 2;
         loadFactor = double(usedSize) / size;
