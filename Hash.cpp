@@ -457,7 +457,7 @@ void Hash::printTable() const
         {
             cout << hashedElements[i] << ", ";
         }
-        cout << hashedElements[size - 1] << "]" << endl;
+        cout << hashedElements[size - 1] << "]" << endl << endl;
     }
     else
     {

@@ -17,7 +17,7 @@ int main()
     //Insert test
     Hash table;
     timePoint start = high_resolution_clock::now();
-    for (int i = 1; i < 250; i++)
+    for (int i = 1; i < 20; i++)
     {
         table.insert(i);
     }
@@ -26,7 +26,7 @@ int main()
     cout << "Total time taken to insert: " << timeTaken.count()/1000000 << endl;
     table.printTable();
     start = high_resolution_clock::now();
-    for (int i = 1; i < 110; i++)
+    for (int i = 1; i <25; i++)
     {
         table.deleteElem(i);
     }
