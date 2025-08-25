@@ -234,17 +234,14 @@ int Hash::search(const int& elem) const
     }
     if (collisionHandling == 'd')
     {
-        int i = 1;
         int h2 = 7 - (elem % 7);
-        while (hashedElements[hashIndex] != -1)
-        {
+        for (int i=0; i < size; i++){
+            hashIndex = (hashIndex + i * h2) % size;
             if (hashedElements[hashIndex] == elem)
             {
                 return hashIndex;
             }
-            hashIndex = (hashIndex + i * h2) % size;
-            i++;
-            if (size < i)
+            if (hashedElements[hashIndex] == -1)
             {
                 break;
             }
