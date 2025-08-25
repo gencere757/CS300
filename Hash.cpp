@@ -188,17 +188,6 @@ int Hash::search(const int& elem) const
     {
         hashIndex = multiplicative(elem);
     }
-    if (collisionHandling == 's')
-    {
-        Node* current = separateChainingLists[hashIndex];
-        while (current != nullptr)
-        {
-            if (current->value == elem)
-                return hashIndex;
-            current = current->next;
-        }
-        return -1;
-    }
     if (collisionHandling == 'l') {
         int indexStart = hashIndex;
         while (hashedElements[hashIndex] != -1)
@@ -256,172 +245,53 @@ void Hash::resize(char type)
     if (type == 'e')    //Enlarge
     {
         cout << endl << "Size too small. Enlarging..." << endl << endl;
-        if (collisionHandling == 's')   //Separate Chaining
+
+        int* copy = new int[size * 2];  //Create copy
+        for (int i = 0; i < size; i++)  //Copy current elems
         {
-            // Save reference to old data
-            Node** oldLists = separateChainingLists;
-            int oldSize = size;
-
-            // Create new larger table
-            size *= 2;
-            separateChainingLists = new Node*[size];
-            for (int i = 0; i < size; i++) {
-                separateChainingLists[i] = nullptr;
-            }
-
-            // Reset usedSize for reinsertion
-            usedSize = 0;
-
-            // Re-insert all elements from old table
-            for (int i = 0; i < oldSize; i++) {
-                Node* current = oldLists[i];
-                while (current != nullptr) {
-                    insert(current->value, false);
-                    current = current->next;
-                }
-            }
-
-            // Clean up old table
-            for (int i = 0; i < oldSize; i++) {
-                Node* current = oldLists[i];
-                while (current != nullptr) {
-                    Node* temp = current;
-                    current = current->next;
-                    delete temp;
-                }
-            }
-            delete[] oldLists;
+            copy[i] = hashedElements[i];
         }
-        else   //Not separate chaining
+        delete[] hashedElements;
+        hashedElements = new int[size*2];
+        size *= 2;
+        for (int i = 0; i < size; i++) //Initialize the new array
         {
-            int* copy = new int[size * 2];  //Create copy
-            for (int i = 0; i < size; i++)  //Copy current elems
-            {
-                copy[i] = hashedElements[i];
-            }
-            delete[] hashedElements;
-            hashedElements = new int[size*2];
-            size *= 2;
-            loadFactor = double(usedSize) / size;
-            for (int i = 0; i < size; i++) //Initialize the new array
-            {
-                hashedElements[i] = -1;
-            }
-            for (int i = 0; i < size/2; i++) //Re-insert the old elements
-            {
-                if (copy[i] != -1 && copy[i] != -2)
-                {
-                    insert(copy[i], false);
-                }
-            }
-            delete[] copy;    //Clear the copy
+            hashedElements[i] = -1;
         }
+        for (int i = 0; i < size/2; i++) //Re-insert the old elements
+        {
+            if (copy[i] != -1 && copy[i] != -2)
+            {
+                insert(copy[i], false);
+            }
+        }
+        delete[] copy;    //Clear the copy
+
         loadFactor = double(usedSize) / size;
         cout << "Size increased to double" << endl;
     }
     else if (type == 's')   //Shrinking
     {
         cout << endl << "Size too large. Shrinking..." << endl << endl;
-        if (collisionHandling == 's')
+        int* copy = new int[size];
+        for (int i = 0; i < size; i++)
         {
-            Node** oldArray = new Node*[size];
-            for (int i = 0; i < size; i++)  //Iterate over each element in array
-            {
-                Node* head = separateChainingLists[i];
-                Node* current = head;
-                Node* newCurrent = oldArray[i];
-                if (!current)
-                {
-                    newCurrent = nullptr;
-                    continue;
-                }
-                while (current->next)   //Iterate over each element in linked list
-                {
-                    newCurrent->next = new Node(current->value, current->next);
-                    current = current->next;
-                    newCurrent = newCurrent->next;
-                }
-                newCurrent->next = new Node(current->value, nullptr);
-            }
-            //Delete old array
-            for (int i = 0; i < size; i++)  //Iterate over each element in array
-            {
-                Node* head = separateChainingLists[i];
-                Node* current = head;
-                if (!current)
-                {
-                    delete current;
-                    continue;
-                }
-                while (current->next)   //Iterate over each element in linked list
-                {
-                    Node* temp = current;
-                    current = current->next;
-                    delete temp;
-                }
-                delete current;
-            }
-            delete[] separateChainingLists;
-            separateChainingLists = new Node*[size / 2 + 1];
-
-            // Re-insert elements into resized table
-            for (int i = 0; i < size; i++) {
-                Node* head = oldArray[i];
-                Node* current = head;
-                Node* newCurrent = separateChainingLists[i];
-                if (!current) // null node case
-                {
-                    newCurrent = nullptr;
-                    continue;
-                }
-                while (current->next)   //Iterate over each element in linked list
-                {
-                    insert(current->value, false);
-                    current = current->next;
-                }
-                insert(current->value, false);
-            }
-
-            // Delete oldArray
-            for (int i = 0; i < size; i++)  //Iterate over each element in array
-            {
-                Node* head = oldArray[i];
-                Node* current = head;
-                if (!current)
-                {
-                    delete current;
-                    continue;
-                }
-                while (current->next)   //Iterate over each element in linked list
-                {
-                    Node* temp = current;
-                    current = current->next;
-                    delete temp;
-                }
-                delete current;
-            }
+            copy[i] = hashedElements[i];
         }
-        else // resizing for hashing methods other than separate chaining (array)
+        delete[] hashedElements;
+        hashedElements = new int[size / 2];
+        size = size / 2;
+        for (int i = 0; i < size; i++)  //Initialize the array again
         {
-            int* newArray = new int[size];
-            for (int i = 0; i < size; i++) {
-                newArray[i] = hashedElements[i];
-            }
-            delete[] hashedElements;
-            hashedElements = new int[size / 2];
-            for (int i = 0; i < size/2; i++)  //Initialize the array again
-            {
-                hashedElements[i] = -1;
-            }
-            //Insert all non zero or tombstone elements.
-            for (int i = 0; i < size; i++) {
-                if (newArray[i] != -1 && newArray[i] != -2)
-                insert(newArray[i], false);
-            }
-
-            delete[] newArray;
+            hashedElements[i] = -1;
         }
-        size /= 2;
+        //Insert all non zero or tombstone elements.
+        for (int i = 0; i < size * 2; i++) {
+            if (copy[i] != -1 && copy[i] != -2)
+            insert(copy[i], false);
+        }
+
+        delete[] copy;
         loadFactor = double(usedSize) / size;
         cout << "Size reduced to half" << endl;
     }
@@ -441,18 +311,13 @@ int Hash::modulus(const int& key) const
 
 int Hash::multiplicative(const int& key) const
 {
-    // 64-bit multiplicative constant (Knuth / golden ratio)
-    static const uint64_t MULT = 11400714819323198485ULL;
-    uint64_t k = static_cast<uint64_t>(static_cast<int64_t>(key));
-
-    // Multiply and take high bits. Choose r = ceil(log2(size)), but we can
-    // compute index by taking the top 64 bits then mod by size.
-    uint64_t prod = k * MULT;                 // 64-bit product
-    // Option A: map top bits to range then mod by size
-    // compute a candidate using top 32/64 bits:
-    uint32_t top = static_cast<uint32_t>(prod >> 32); // high 32 bits
-    int idx = static_cast<int>(top % static_cast<uint32_t>(size));
-    return idx;
+    static double A = -1;
+    if (A < 0)
+    {
+        A = getRandomInt(1,1000)/1000.00; // decided at the start of the program
+    }
+    int hashedVal = int(size * (key * A - floor(key * A))); //floor function to ensure its calculated properly
+    return hashedVal;
 }
 
 void Hash::printTable() const

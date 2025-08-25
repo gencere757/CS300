@@ -20,11 +20,11 @@ public:
     void insert(const int& elem, bool resizing = true);
     bool deleteElem(const int& elem);
     void printTable() const;
+    int search(const int& elem) const;   //Search  for a particular element, return true if found and false if not found
 
     double getLoadFactor() const;
 
 private:
-    int search(const int& elem) const;   //Search  for a particular element, return true if found and false if not found
     void resize(char type);  //Resize the table
     int modulus(const int& key) const;   //Hashes the given key according to modulus hashing
     int multiplicative(const int& key) const; // hashes given key according to multiplicative hashing
