@@ -1,5 +1,6 @@
 #include <iostream>
 #include <chrono>
+#include <fstream>
 
 #include "Hash.h"
 
@@ -17,22 +18,25 @@ int main()
     //Insert test
     Hash table;
     timePoint start = high_resolution_clock::now();
-    for (int i = 1; i < 20; i++)
+    for (int i = 1; i < 120; i++)
     {
         table.insert(i);
     }
     timePoint end = high_resolution_clock::now();
     duration timeTaken = duration_cast<microseconds>(end - start);
-    cout << "Total time taken to insert: " << timeTaken.count()/1000000 << endl;
+    cout << "Total time taken to insert: " << timeTaken.count()/1000000.00 << endl;
     table.printTable();
+
+
+
     start = high_resolution_clock::now();
-    for (int i = 1; i <25; i++)
+    for (int i = 1; i <85; i++)
     {
         table.deleteElem(i);
     }
     end = high_resolution_clock::now();
     timeTaken = duration_cast<microseconds>(end - start);
     table.printTable();
-    cout << "Total time taken to delete: " << timeTaken.count()/1000000 << endl;
+    cout << "Total time taken to delete: " << timeTaken.count()/1000000.00 << endl;
     return 0;
 }

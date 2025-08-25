@@ -21,8 +21,7 @@ public:
     bool deleteElem(const int& elem);
     void printTable() const;
 
-    void setHashingType();
-    void changeParameters(char hashType);
+    double getLoadFactor() const;
 
 private:
     int search(const int& elem) const;   //Search  for a particular element, return true if found and false if not found

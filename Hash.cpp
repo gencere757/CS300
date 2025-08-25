@@ -441,9 +441,18 @@ int Hash::modulus(const int& key) const
 
 int Hash::multiplicative(const int& key) const
 {
-    static double A = getRandomInt(1,1000)/1000.00; // decided at the start of the program
-    int hashedVal = int(size * (key * A - floor(key * A))); //floor function to ensure its calculated properly
-    return hashedVal;
+    // 64-bit multiplicative constant (Knuth / golden ratio)
+    static const uint64_t MULT = 11400714819323198485ULL;
+    uint64_t k = static_cast<uint64_t>(static_cast<int64_t>(key));
+
+    // Multiply and take high bits. Choose r = ceil(log2(size)), but we can
+    // compute index by taking the top 64 bits then mod by size.
+    uint64_t prod = k * MULT;                 // 64-bit product
+    // Option A: map top bits to range then mod by size
+    // compute a candidate using top 32/64 bits:
+    uint32_t top = static_cast<uint32_t>(prod >> 32); // high 32 bits
+    int idx = static_cast<int>(top % static_cast<uint32_t>(size));
+    return idx;
 }
 
 void Hash::printTable() const
@@ -477,4 +486,9 @@ void Hash::printTable() const
         }
         cout << "}";
     }
+}
+
+double Hash::getLoadFactor() const
+{
+    return loadFactor;
 }
