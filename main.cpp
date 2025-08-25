@@ -15,12 +15,17 @@ typedef chrono::duration<long long, ratio<1, 1000000>> duration;
 
 int main()
 {
+
+
     //Insert test
     Hash table;
+    vector<int>& probes = table.probes;
+    vector<double> loads;
     timePoint start = high_resolution_clock::now();
     for (int i = 1; i < 120; i++)
     {
         table.insert(i);
+        loads.push_back(table.getLoadFactor());
     }
     timePoint end = high_resolution_clock::now();
     duration timeTaken = duration_cast<microseconds>(end - start);
@@ -28,7 +33,7 @@ int main()
     table.printTable();
 
 
-
+    //Delete test
     start = high_resolution_clock::now();
     for (int i = 1; i <85; i++)
     {

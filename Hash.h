@@ -4,6 +4,9 @@
 
 #ifndef HASH_H
 #define HASH_H
+#include <vector>
+
+using std::vector;
 
 struct Node
 {
@@ -23,6 +26,7 @@ public:
     int search(const int& elem) const;   //Search  for a particular element, return true if found and false if not found
 
     double getLoadFactor() const;
+    vector<int> probes;
 
 private:
     void resize(char type);  //Resize the table

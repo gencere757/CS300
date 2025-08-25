@@ -84,9 +84,9 @@ void Hash::insert(const int& elem, bool resizing)
     }
     else   //Then we will use normal integer array
     {
+        int totalProbe = 0;
         if (hashedElements[idx] != -1)  //If we need to do collision handling
         {
-            int totalProbe = 0;
             if (collisionHandling == 'l')   //Linear Probing
             {
                 cout << "Collision happened," << "table[" << idx << "] is full." << endl;
@@ -122,6 +122,8 @@ void Hash::insert(const int& elem, bool resizing)
                 }
             }
             cout << "Applied a total of " << totalProbe << " probes." << endl;
+            if (!resizing)
+                probes.push_back(totalProbe);
         }
         hashedElements[idx] = elem; //Insert the element
         cout << "Inserted to table[" << idx << "]" << endl;
