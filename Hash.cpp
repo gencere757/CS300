@@ -258,7 +258,7 @@ void Hash::resize(char type)
 {
     if (type == 'e')    //Enlarge
     {
-        cout << "Size too small. Enlarging..." << endl;
+        cout << endl << "Size too small. Enlarging..." << endl << endl;
         if (collisionHandling == 's')   //Separate Chaining
         {
             // Save reference to old data
@@ -324,7 +324,7 @@ void Hash::resize(char type)
     }
     else if (type == 's')   //Shrinking
     {
-        cout << "Size too large. Shrinking..." << endl;
+        cout << endl << "Size too large. Shrinking..." << endl << endl;
         if (collisionHandling == 's')
         {
             Node** oldArray = new Node*[size];
@@ -428,6 +428,7 @@ void Hash::resize(char type)
         loadFactor = double(usedSize) / size;
         cout << "Size reduced to half" << endl;
     }
+    cout << endl;
 }
 
 int Hash::modulus(const int& key) const
@@ -444,7 +445,7 @@ int Hash::modulus(const int& key) const
 int Hash::multiplicative(const int& key) const
 {
     static double A = getRandomInt(1,1000)/1000.00; // decided at the start of the program
-    int hashedVal = double(key * A - int(key*A)) * size;
+    int hashedVal = int(size * (key * A - floor(key * A))); //floor function to ensure its calculated properly
     return hashedVal;
 }
 
