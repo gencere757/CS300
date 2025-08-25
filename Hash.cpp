@@ -111,7 +111,7 @@ void Hash::insert(const int& elem, bool resizing)
             }
             else if (collisionHandling == 'd')  //Double Hashing
             {
-                int i = 0, h2 = elem % 7; // we picked m = 7 for h2(k)= k mod m
+                int i = 1, h2 = 7 - (elem % 7); // we picked m = 7 for h2(k)= m - (k mod m). we have to ensure h2(k) is never 0 -> that's why we use m - (k mod m) instead of just k mod m
                 cout << "Collision happened," << "table[" << idx << "] is full." << endl;
                 cout << "Applying double hashing..." << endl;
                 while (hashedElements[idx] != -1)
@@ -124,7 +124,7 @@ void Hash::insert(const int& elem, bool resizing)
             cout << "Applied a total of " << totalProbe << " probes." << endl;
         }
         hashedElements[idx] = elem; //Insert the element
-        cout << "Inserted to table[ " << idx << "]" << endl;
+        cout << "Inserted to table[" << idx << "]" << endl;
     }
 
     if (resizing)
@@ -136,6 +136,7 @@ void Hash::insert(const int& elem, bool resizing)
             resize('e');
         }
     }
+    cout << endl;
 }
 
 bool Hash::deleteElem(const int& elem)
@@ -143,7 +144,7 @@ bool Hash::deleteElem(const int& elem)
     int idx = search(elem);
     if (idx == -1)  //If element not in table
     {
-        cout << "The element" << elem <<"could not be found!" << endl;
+        cout << "The element " << elem <<" could not be found!" << endl;
         return false;
     }
 
@@ -233,15 +234,15 @@ int Hash::search(const int& elem) const
     }
     if (collisionHandling == 'd')
     {
-        int i = 0;
-        int doubleHashStep = 1 + (elem % (size - 1));
+        int i = 1;
+        int h2 = 7 - (elem % 7);
         while (hashedElements[hashIndex] != -1)
         {
             if (hashedElements[hashIndex] == elem)
             {
                 return hashIndex;
             }
-            hashIndex = (hashIndex + i * doubleHashStep) % size;
+            hashIndex = (hashIndex + i * h2) % size;
             i++;
             if (size < i)
             {
