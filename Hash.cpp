@@ -86,6 +86,7 @@ void Hash::insert(const int& elem, bool resizing)
     {
         if (hashedElements[idx] != -1)  //If we need to do collision handling
         {
+            int totalProbe = 0;
             if (collisionHandling == 'l')   //Linear Probing
             {
                 cout << "Collision happened," << "table[" << idx << "] is full." << endl;
@@ -93,6 +94,7 @@ void Hash::insert(const int& elem, bool resizing)
                 while (hashedElements[idx] != -1)
                 {
                     idx = (idx + 1) % size;
+                    totalProbe++;
                 }
             }
             else if (collisionHandling == 'q')  //Quadratic Probing
@@ -104,6 +106,7 @@ void Hash::insert(const int& elem, bool resizing)
                 {
                     idx = (idx + iteration * iteration) % size;
                     iteration++;
+                    totalProbe++;
                 }
             }
             else if (collisionHandling == 'd')  //Double Hashing
@@ -115,11 +118,13 @@ void Hash::insert(const int& elem, bool resizing)
                 {
                     idx = (idx + i * h2) % size; // double hashing  = h(k) + i(h2(k))
                     i++;
+                    totalProbe++;
                 }
             }
+            cout << "Applied a total of " << totalProbe << " probes." << endl;
         }
         hashedElements[idx] = elem; //Insert the element
-        cout << "Inserted to index: " << idx << endl;
+        cout << "Inserted to table[ " << idx << "]" << endl;
     }
 
     if (resizing)
@@ -296,7 +301,7 @@ void Hash::resize(char type)
             {
                 copy[i] = hashedElements[i];
             }
-            delete hashedElements;
+            delete[] hashedElements;
             hashedElements = new int[size*2];
             size *= 2;
             loadFactor = double(usedSize) / size;
@@ -311,7 +316,7 @@ void Hash::resize(char type)
                     insert(copy[i], false);
                 }
             }
-            delete copy;    //Clear the copy
+            delete[] copy;    //Clear the copy
         }
         loadFactor = double(usedSize) / size;
         cout << "Size increased to double" << endl;
@@ -358,7 +363,7 @@ void Hash::resize(char type)
                 }
                 delete current;
             }
-            delete separateChainingLists;
+            delete[] separateChainingLists;
             separateChainingLists = new Node*[size / 2 + 1];
 
             // Re-insert elements into resized table
@@ -404,7 +409,7 @@ void Hash::resize(char type)
             for (int i = 0; i < size; i++) {
                 newArray[i] = hashedElements[i];
             }
-            delete hashedElements;
+            delete[] hashedElements;
             hashedElements = new int[size / 2];
             for (int i = 0; i < size/2; i++)  //Initialize the array again
             {
