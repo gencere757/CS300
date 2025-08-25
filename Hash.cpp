@@ -111,7 +111,7 @@ void Hash::insert(const int& elem, bool resizing)
             }
             else if (collisionHandling == 'd')  //Double Hashing
             {
-                int i = 1, h2 = 7 - (elem % 7); // we picked m = 7 for h2(k)= m - (k mod m). we have to ensure h2(k) is never 0 -> that's why we use m - (k mod m) instead of just k mod m
+                int i = 1, h2 = 1 + (elem % (size - 1)); // we picked m = 7 for h2(k)= m - (k mod m). we have to ensure h2(k) is never 0 -> that's why we use m - (k mod m) instead of just k mod m
                 cout << "Collision happened," << "table[" << idx << "] is full." << endl;
                 cout << "Applying double hashing..." << endl;
                 while (hashedElements[idx] != -1)
@@ -234,7 +234,7 @@ int Hash::search(const int& elem) const
     }
     if (collisionHandling == 'd')
     {
-        int h2 = 7 - (elem % 7);
+        int h2 = 1 + (elem % (size - 1));
         for (int i=0; i < size; i++){
             hashIndex = (hashIndex + i * h2) % size;
             if (hashedElements[hashIndex] == elem)
