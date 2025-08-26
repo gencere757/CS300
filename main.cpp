@@ -21,7 +21,7 @@ Hash table;
 
 void probeVsLoad();
 vector<int> generateNormalInput(int size);
-vector<int> generateCollisionKeys(int targetBucket, int size, int numKeys = 50);
+vector<int> generateCollisionKeys(int numKeys = 50);
 void insertDeleteKeys();
 
 void writeVectorsToCsv(const std::vector<double>& vec1, const std::vector<int>& vec2, const std::string& filename) {
@@ -65,10 +65,7 @@ int getRandomInteger(const int& min, const int& max) {
 
 int main()
 {
-    vector<int> probes;
-
-    vector<double> loads;
-
+    insertDeleteKeys();
 
 
 
@@ -79,7 +76,7 @@ int main()
 
 void insertDeleteKeys()
 {
-    vector<int> values = generateCollisionKeys(0,table.getSize(),30000);
+    vector<int> values = generateNormalInput(30000);
     timePoint start = high_resolution_clock::now();
     for (int i = 0; i < values.size(); i++)
     {
@@ -91,7 +88,7 @@ void insertDeleteKeys()
 
 
 
-    //Delete test
+    /*//Delete test
     start = high_resolution_clock::now();
     for (int i = 0; i < values.size(); i++)
     {
@@ -99,16 +96,15 @@ void insertDeleteKeys()
     }
     end = high_resolution_clock::now();
     timeTaken = duration_cast<microseconds>(end - start);
-    cout << "Total time taken to delete: " << timeTaken.count()/1000000.00;
+    cout << "Total time taken to delete: " << timeTaken.count()/1000000.00;*/
 }
 
 
 void probeVsLoad()  //Compares probe count vs load factor
 {
     vector<int> values = generateNormalInput(30000);
-    vector<int> probes;
-    //Insert test
 
+    vector<int> probes;
     vector<double> loads;
     Hash table;
     for (int i = 0; i < values.size(); i++)
@@ -120,7 +116,7 @@ void probeVsLoad()  //Compares probe count vs load factor
     writeVectorsToCsv(loads, probes, "output.csv");
 }
 
-vector<int> generateCollisionKeys(int targetBucket, int size, int numKeys)    //Generates adverserial input
+vector<int> generateCollisionKeys(int numKeys)    //Generates adverserial input
 {
     vector<int> keys;
     int baseKey = 12345; // arbitrary starting point
