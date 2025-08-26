@@ -38,7 +38,7 @@ Hash::Hash()
     collisionHandling = 'l';
     cout << "Enter hashing type:" << endl;
     cin >> hashType;
-    cout << "Enter collision handling method:" << endl"";
+    cout << "Enter collision handling method:" << endl;
     cin >> collisionHandling;
     hashedElements = new int[size];
     for (int i = 0; i < size; i++)

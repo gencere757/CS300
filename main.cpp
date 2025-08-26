@@ -18,11 +18,13 @@ extern unsigned int a;
 extern unsigned int b;
 extern unsigned int p;
 Hash table;
+vector<int> values;
 
 void probeVsLoad();
 vector<int> generateNormalInput(int size);
 vector<int> generateCollisionKeys(int numKeys = 50);
-void insertDeleteKeys();
+void insertKeys();
+void deleteKeys();
 void elemNumberAndTimeTaken();
 
 void writeVectorsToCsv(const std::vector<double>& vec1, const std::vector<int>& vec2, const std::string& filename) {
@@ -95,21 +97,22 @@ int getRandomInteger(const int& min, const int& max) {
 int main()
 {
     //elemNumberAndTimeTaken();
-    insertDeleteKeys();
+    insertKeys();
+    deleteKeys();
     //probeVsLoad();
     return 0;
 }
 
-void insertDeleteKeys()
+void insertKeys()
 {
     table.clear();
     int numberOfKeys;
-    cout << "Enter number of keys to insert/ delete";
+    cout << "Enter number of keys to insert" << endl;
     cin >> numberOfKeys;
     bool adverserial;
-    cout << "Enter adverserial or not:";
+    cout << "Enter adverserial or not:" << endl;
     cin >> adverserial;
-    vector<int> values;
+    values.clear();
     if (adverserial)
     {
         values = generateCollisionKeys(numberOfKeys);
@@ -127,33 +130,38 @@ void insertDeleteKeys()
     timePoint end = high_resolution_clock::now();
     duration timeTaken = duration_cast<microseconds>(end - start);
     cout << "Total time taken for insertions: " << timeTaken.count()/1000000.00;
+}
 
-
-
+void deleteKeys()
+{
+    int leftKeys;
+    cout << "Enter number of keys to leave in the list:" << endl;
+    cin >> leftKeys;
     //Delete test
-    start = high_resolution_clock::now();
-    for (int i = 0; i < values.size()-500; i++)
+    timePoint start = high_resolution_clock::now();
+    for (int i = 0; i < values.size()-leftKeys; i++)
     {
         table.deleteElem(values.at(i));
     }
-    end = high_resolution_clock::now();
-    timeTaken = duration_cast<microseconds>(end - start);
+    timePoint end = high_resolution_clock::now();
+    duration timeTaken = duration_cast<microseconds>(end - start);
     cout << "Total time taken to delete: " << timeTaken.count()/1000000.00 << endl;
     table.printTable();
 }
 
 
+
 void probeVsLoad()  //Compares probe count vs load factor
 {
     table.clear();
-    vector<int> values = generateNormalInput(30000);
+    vector<int> vals = generateNormalInput(30000);
 
     vector<int> probes;
     vector<double> loads;
     Hash table;
-    for (int i = 0; i < values.size(); i++)
+    for (int i = 0; i < vals.size(); i++)
     {
-        table.insert(values.at(i));
+        table.insert(vals.at(i));
         probes.push_back(probeCount);
         loads.push_back(table.getLoadFactor());
     }
@@ -172,12 +180,12 @@ vector<int> generateCollisionKeys(int numKeys)    //Generates adverserial input
 
 vector<int> generateNormalInput(int size)
 {
-    vector<int> values;
+    vector<int> vals;
     for (int i = 0; i < size; i++)
     {
-        values.push_back(getRandomInteger(1,INT_MAX));
+        vals.push_back(getRandomInteger(1,INT_MAX));
     }
-    return values;
+    return vals;
 }
 
 void elemNumberAndTimeTaken()
