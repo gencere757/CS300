@@ -312,7 +312,7 @@ int Hash::multiplicative(const int& key) const
     static double A = -1;
     if (A < 0)
     {
-        A = getRandomInt(1,INT_MAX)/double(INT_MAX); // decided at the start of the program
+        A = double(getRandomInt(1,INT_MAX)/double(INT_MAX)); // decided at the start of the program
     }
     int hashedVal = int(size * (key * A - floor(key * A))); //floor function to ensure its calculated properly
     return hashedVal;
