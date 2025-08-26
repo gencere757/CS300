@@ -9,6 +9,13 @@
 
 using namespace std;
 
+double minResize = 0.3;
+double maxResize = 0.85;
+
+unsigned static int a = 0;
+unsigned static int b = 0;
+unsigned static int p = 0;
+
 int probeCount;
 
 int getRandomInt(const int& min, const int& max) {
@@ -124,7 +131,7 @@ void Hash::insert(const int& elem, bool resizing)
     {
         usedSize++;
         loadFactor = double(usedSize) / size;
-        if (loadFactor > 0.85)
+        if (loadFactor > maxResize)
         {
             resize('e');
         }
@@ -144,7 +151,7 @@ bool Hash::deleteElem(const int& elem)
     cout << "Deleted the element: " << elem << endl;
     usedSize--;
     loadFactor = double(usedSize) / size;
-    if (loadFactor < 0.3)
+    if (loadFactor < minResize)
     {
         resize('s');
     }
@@ -275,9 +282,9 @@ void Hash::resize(char type)
 int Hash::modulus(const int& key) const
 {
     //Random values for hash function that  will be determined at the start of program
-    unsigned static int a = 0;
-    unsigned static int b = 0;
-    unsigned static int p = 0;
+
+
+
 
     if (a == 0)
     {
