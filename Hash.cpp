@@ -12,9 +12,9 @@ using namespace std;
 double minResize = 0.3;
 double maxResize = 0.85;
 
-unsigned static int a = 0;
-unsigned static int b = 0;
-unsigned static int p = 0;
+unsigned int a = 0;
+unsigned int b = 0;
+unsigned int p = 0;
 
 int probeCount;
 
@@ -326,4 +326,9 @@ void Hash::printTable() const
 double Hash::getLoadFactor() const
 {
     return loadFactor;
+}
+
+int Hash::getSize() const
+{
+    return size;
 }

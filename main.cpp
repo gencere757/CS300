@@ -1,6 +1,7 @@
 #include <iostream>
 #include <chrono>
 #include <fstream>
+#include <random>
 
 #include "Hash.h"
 
@@ -13,12 +14,13 @@ typedef  chrono::time_point<high_resolution_clock> timePoint;
 typedef chrono::duration<long long, ratio<1, 1000000>> duration;
 
 extern int probeCount;
-extern unsigned static int a;
-extern unsigned static int b;
-extern unsigned static int p;
+extern unsigned int a;
+extern unsigned int b;
+extern unsigned int p;
 
 
 void probeVsLoad();
+
 
 
 void writeVectorsToCsv(const std::vector<double>& vec1, const std::vector<int>& vec2, const std::string& filename) {
@@ -53,34 +55,32 @@ void writeVectorsToCsv(const std::vector<double>& vec1, const std::vector<int>& 
 int main()
 {
 
-    /*vector<int> probes;
+    vector<int> probes;
     //Insert test
 
     vector<double> loads;
     Hash table;
-    for (int i = 2; i < 30000; i+= 100)
+    for (int i = 1; i < 30000; i++)
     {
         table.insert(i);
         // timePoint start = high_resolution_clock::now();
         // timePoint end = high_resolution_clock::now();
         // duration timeTaken = duration_cast<microseconds>(end - start);
-        probes.push_back(probeCount);
-        loads.push_back(table.getLoadFactor());
-    }*/
+
+    }
 
 
 
-    /*//Delete test
+    //Delete test
     timePoint start = high_resolution_clock::now();
-    for (int i = 1; i <85; i++)
+    for (int i = 1; i <30000; i++)
     {
         table.deleteElem(i);
     }
     timePoint end = high_resolution_clock::now();
     duration timeTaken = duration_cast<microseconds>(end - start);
-    table.printTable();*/
-    // writeVectorsToCsv(loads, probes, "output.csv");
-    probeVsLoad();
+    cout << "Total time taken to delete: " << timeTaken.count()/1000000.00;
+    //probeVsLoad();
     return 0;
 }
 

@@ -27,6 +27,7 @@ public:
     void clear();   //Clears the table's elements
 
     double getLoadFactor() const;   //Returns the load factor
+    int getSize() const;
 
 
 private:
