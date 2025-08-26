@@ -24,9 +24,10 @@ public:
     bool deleteElem(const int& elem);
     void printTable() const;
     int search(const int& elem) const;   //Search  for a particular element, return true if found and false if not found
+    void clear();   //Clears the table's elements
 
-    double getLoadFactor() const;
-    vector<int> probes;
+    double getLoadFactor() const;   //Returns the load factor
+
 
 private:
     void resize(char type);  //Resize the table
@@ -35,7 +36,6 @@ private:
 
 
     int* hashedElements;    //Array containing the elements
-    Node** separateChainingLists;    //An array of linked lists to be used when using separate chaining method
     int size;   //Size of the table
     int usedSize;   //Used number of slots
     double loadFactor;  //How full the table is
