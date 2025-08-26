@@ -95,16 +95,20 @@ void Hash::insert(const int& elem, bool resizing)
                 totalProbe++;
             }
         }
-        else if (collisionHandling == 'd')  //Double Hashing
-        {
-            int i = 1, h2 = 1 + (elem % (size - 1)); // we picked m = 7 for h2(k)= m - (k mod m). we have to ensure h2(k) is never 0 -> that's why we use m - (k mod m) instead of just k mod m
-            cout << "Collision happened," << "table[" << idx << "] is full." << endl;
+        else if (collisionHandling == 'd') { // Double Hashing
+            int h2 = 1 + (elem % (size - 1));
+            int ogIdx = idx;
+
+            cout << "Collision happened, table[" << idx << "] is full." << endl;
             cout << "Applying double hashing..." << endl;
-            while (hashedElements[idx] != -1)
-            {
-                idx = (idx + i * h2) % size; // double hashing  = h(k) + i(h2(k))
-                i++;
+
+            for (int i = 1; i < size; i++) {  // Start from i=1 since i=0 is original position
+                idx = (ogIdx + i * h2) % size;
                 totalProbe++;
+
+                if (hashedElements[idx] == -1) { // Found empty
+                    break;
+                }
             }
         }
         cout << "Applied a total of " << totalProbe << " probes." << endl;
@@ -191,21 +195,21 @@ int Hash::search(const int& elem) const
         }
         return -1;
     }
-    if (collisionHandling == 'd')
-    {
+    if (collisionHandling == 'd') {
         int h2 = 1 + (elem % (size - 1));
-        for (int i=0; i < size; i++){
-            hashIndex = (hashIndex + i * h2) % size;
-            if (hashedElements[hashIndex] == elem)
-            {
-                return hashIndex;
+        int ogIdx = hashIndex;
+
+        for (int i = 0; i < size; i++) {
+            int currentIdx = (ogIdx + i * h2) % size;
+
+            if (hashedElements[currentIdx] == elem) {
+                return currentIdx;
             }
-            if (hashedElements[hashIndex] == -1)
-            {
-                break;
+            if (hashedElements[currentIdx] == -1) {
+                break;  // the element could not have been placed here.
             }
         }
-        return -1;
+        return -1;  // Not found
     }
     return -1;
 }

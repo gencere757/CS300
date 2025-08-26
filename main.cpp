@@ -52,7 +52,7 @@ int main()
 
     vector<double> times;
     Hash table;
-    for (int i = 2; i < 30000; i+= 100)
+    for (int i = 2; i < 30; i+= 1)
     {
         timePoint start = high_resolution_clock::now();
         for (int j = 1; j < i; j++)
@@ -78,6 +78,6 @@ int main()
     end = high_resolution_clock::now();
     timeTaken = duration_cast<microseconds>(end - start);
     table.printTable();*/
-    writeVectorsToCsv(elemNumbers, times, "output.csv");
+    // writeVectorsToCsv(elemNumbers, times, "output.csv");
     return 0;
 }
