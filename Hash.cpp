@@ -32,7 +32,8 @@ int getRandomInt(const int& min, const int& max) {
 
 Hash::Hash()
 {
-    size = 10;
+
+    size = 100;
     loadFactor = 0;
     usedSize = 0;
     hashType = 'o';

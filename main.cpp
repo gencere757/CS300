@@ -97,10 +97,8 @@ int getRandomInteger(const int& min, const int& max) {
 
 int main()
 {
-    //elemNumberAndTimeTaken();
-    insertKeys();
-    deleteKeys();
-    //probeVsLoad();
+
+    
     cout << "Total number of resizes: " << resizeCount << endl;
     return 0;
 }
