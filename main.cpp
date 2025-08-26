@@ -13,9 +13,15 @@ typedef  chrono::time_point<high_resolution_clock> timePoint;
 typedef chrono::duration<long long, ratio<1, 1000000>> duration;
 
 extern int probeCount;
+extern unsigned static int a;
+extern unsigned static int b;
+extern unsigned static int p;
 
 
-void writeVectorsToCsv(const std::vector<int>& vec1, const std::vector<double>& vec2, const std::string& filename) {
+void probeVsLoad();
+
+
+void writeVectorsToCsv(const std::vector<double>& vec1, const std::vector<int>& vec2, const std::string& filename) {
     // Open the CSV file for writing
     // std::ofstream is used for writing to files
     std::ofstream outputFile(filename);
@@ -47,37 +53,66 @@ void writeVectorsToCsv(const std::vector<int>& vec1, const std::vector<double>& 
 int main()
 {
 
-    vector<int> elemNumbers;
+    /*vector<int> probes;
     //Insert test
 
-    vector<double> times;
+    vector<double> loads;
     Hash table;
     for (int i = 2; i < 30000; i+= 100)
     {
-        timePoint start = high_resolution_clock::now();
-        for (int j = 1; j < i; j++)
-        {
-            table.insert(j);
-        }
-        timePoint end = high_resolution_clock::now();
-        duration timeTaken = duration_cast<microseconds>(end - start);
-        elemNumbers.push_back(i-1);
-        times.push_back(timeTaken.count()/1000000.00);
-        table.printTable();
-        table.clear();
-    }
+        table.insert(i);
+        // timePoint start = high_resolution_clock::now();
+        // timePoint end = high_resolution_clock::now();
+        // duration timeTaken = duration_cast<microseconds>(end - start);
+        probes.push_back(probeCount);
+        loads.push_back(table.getLoadFactor());
+    }*/
 
 
 
     /*//Delete test
-    start = high_resolution_clock::now();
+    timePoint start = high_resolution_clock::now();
     for (int i = 1; i <85; i++)
     {
         table.deleteElem(i);
     }
-    end = high_resolution_clock::now();
-    timeTaken = duration_cast<microseconds>(end - start);
+    timePoint end = high_resolution_clock::now();
+    duration timeTaken = duration_cast<microseconds>(end - start);
     table.printTable();*/
-    writeVectorsToCsv(elemNumbers, times, "output.csv");
+    // writeVectorsToCsv(loads, probes, "output.csv");
+    probeVsLoad();
     return 0;
+}
+
+void probeVsLoad()
+{
+    vector<int> probes;
+    //Insert test
+
+    vector<double> loads;
+    Hash table;
+    for (int i = 2; i < 30000; i+= 100)
+    {
+        table.insert(i);
+        probes.push_back(probeCount);
+        loads.push_back(table.getLoadFactor());
+    }
+    writeVectorsToCsv(loads, probes, "output.csv");
+}
+
+std::vector<int> generateCollisionKeys(int targetBucket, int size, int numKeys = 50) {
+    std::vector<int> collisionKeys;
+
+    // Generate keys that should all hash to targetBucket
+    for (int attempt = 0; attempt < numKeys * 10 && collisionKeys.size() < numKeys; attempt++) {
+        // Try key = attempt and see if it hashes to targetBucket
+        int key = attempt + 1;
+        unsigned int hashedVal = ((unsigned long long)a * key + b) % p % size;
+
+        if (hashedVal == targetBucket) {
+            collisionKeys.push_back(key);
+        }
+    }
+
+    return collisionKeys;
 }
