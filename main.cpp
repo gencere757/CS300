@@ -76,7 +76,22 @@ int main()
 
 void insertDeleteKeys()
 {
-    vector<int> values = generateNormalInput(30000);
+    int numberOfKeys;
+    cout << "Enter number of keys to insert/ delete";
+    cin >> numberOfKeys;
+    bool adverserial;
+    cout << "Enter adverserial or not:";
+    cin >> adverserial;
+    vector<int> values;
+    if (adverserial)
+    {
+        values = generateCollisionKeys(numberOfKeys);
+    }
+    else
+    {
+        values = generateNormalInput(numberOfKeys);
+    }
+
     timePoint start = high_resolution_clock::now();
     for (int i = 0; i < values.size(); i++)
     {
