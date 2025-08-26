@@ -17,11 +17,12 @@ extern int probeCount;
 extern unsigned int a;
 extern unsigned int b;
 extern unsigned int p;
-
+Hash table;
 
 void probeVsLoad();
 vector<int> generateNormalInput(int size);
 vector<int> generateCollisionKeys(int targetBucket, int size, int numKeys = 50);
+void insertDeleteKeys();
 
 void writeVectorsToCsv(const std::vector<double>& vec1, const std::vector<int>& vec2, const std::string& filename) {
     // Open the CSV file for writing
@@ -67,33 +68,40 @@ int main()
     vector<int> probes;
 
     vector<double> loads;
-    Hash table;
 
+
+
+
+
+    //probeVsLoad();
+    return 0;
+}
+
+void insertDeleteKeys()
+{
     vector<int> values = generateCollisionKeys(0,table.getSize(),30000);
-
-    for (int i = 1; i < 30000; i++)
+    timePoint start = high_resolution_clock::now();
+    for (int i = 0; i < values.size(); i++)
     {
-        table.insert(i);
-        // timePoint start = high_resolution_clock::now();
-        // timePoint end = high_resolution_clock::now();
-        // duration timeTaken = duration_cast<microseconds>(end - start);
-
+        table.insert(values.at(i));
     }
+    timePoint end = high_resolution_clock::now();
+    duration timeTaken = duration_cast<microseconds>(end - start);
+    cout << "Total time taken for insertions: " << timeTaken.count()/1000000.00;
 
 
 
     //Delete test
-    timePoint start = high_resolution_clock::now();
-    for (int i = 1; i <30000; i++)
+    start = high_resolution_clock::now();
+    for (int i = 0; i < values.size(); i++)
     {
         table.deleteElem(i);
     }
-    timePoint end = high_resolution_clock::now();
-    duration timeTaken = duration_cast<microseconds>(end - start);
+    end = high_resolution_clock::now();
+    timeTaken = duration_cast<microseconds>(end - start);
     cout << "Total time taken to delete: " << timeTaken.count()/1000000.00;
-    //probeVsLoad();
-    return 0;
 }
+
 
 void probeVsLoad()  //Compares probe count vs load factor
 {
