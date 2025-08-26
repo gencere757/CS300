@@ -20,8 +20,8 @@ extern unsigned int p;
 
 
 void probeVsLoad();
-
-
+vector<int> generateNormalInput(int size);
+vector<int> generateCollisionKeys(int targetBucket, int size, int numKeys = 50);
 
 void writeVectorsToCsv(const std::vector<double>& vec1, const std::vector<int>& vec2, const std::string& filename) {
     // Open the CSV file for writing
@@ -51,15 +51,26 @@ void writeVectorsToCsv(const std::vector<double>& vec1, const std::vector<int>& 
     std::cout << "Data successfully written to " << filename << std::endl;
 }
 
+int getRandomInteger(const int& min, const int& max) {
+    // Static variables to ensure the generator and seeding happen only once
+    static std::mt19937 rng(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+
+    // Create a distribution for the specified range
+    std::uniform_int_distribution<int> dist(min, max);
+
+    // Generate and return the random number
+    return dist(rng);
+}
 
 int main()
 {
-
     vector<int> probes;
-    //Insert test
 
     vector<double> loads;
     Hash table;
+
+    vector<int> values = generateCollisionKeys(0,table.getSize(),30000);
+
     for (int i = 1; i < 30000; i++)
     {
         table.insert(i);
@@ -84,35 +95,39 @@ int main()
     return 0;
 }
 
-void probeVsLoad()
+void probeVsLoad()  //Compares probe count vs load factor
 {
+    vector<int> values = generateNormalInput(30000);
     vector<int> probes;
     //Insert test
 
     vector<double> loads;
     Hash table;
-    for (int i = 2; i < 30000; i+= 100)
+    for (int i = 0; i < values.size(); i++)
     {
-        table.insert(i);
+        table.insert(values.at(i));
         probes.push_back(probeCount);
         loads.push_back(table.getLoadFactor());
     }
     writeVectorsToCsv(loads, probes, "output.csv");
 }
 
-std::vector<int> generateCollisionKeys(int targetBucket, int size, int numKeys = 50) {
-    std::vector<int> collisionKeys;
-
-    // Generate keys that should all hash to targetBucket
-    for (int attempt = 0; attempt < numKeys * 10 && collisionKeys.size() < numKeys; attempt++) {
-        // Try key = attempt and see if it hashes to targetBucket
-        int key = attempt + 1;
-        unsigned int hashedVal = ((unsigned long long)a * key + b) % p % size;
-
-        if (hashedVal == targetBucket) {
-            collisionKeys.push_back(key);
-        }
+vector<int> generateCollisionKeys(int targetBucket, int size, int numKeys)    //Generates adverserial input
+{
+    vector<int> keys;
+    int baseKey = 12345; // arbitrary starting point
+    for (int i = 0; i < numKeys; i++) {
+        keys.push_back(baseKey + i * p); // same residue mod p
     }
+    return keys;
+}
 
-    return collisionKeys;
+vector<int> generateNormalInput(int size)
+{
+    vector<int> values;
+    for (int i = 0; i < size; i++)
+    {
+        values.push_back(getRandomInteger(1,INT_MAX));
+    }
+    return values;
 }
