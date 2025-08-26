@@ -101,6 +101,7 @@ int main()
     insertKeys();
     deleteKeys();
     //probeVsLoad();
+    cout << "Total number of resizes: " << resizeCount << endl;
     return 0;
 }
 
