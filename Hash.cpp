@@ -17,6 +17,7 @@ unsigned int b = 0;
 unsigned int p = 0;
 
 int probeCount;
+int resizeCount = 0;
 
 int getRandomInt(const int& min, const int& max) {
     // Static variables to ensure the generator and seeding happen only once
@@ -276,6 +277,7 @@ void Hash::resize(char type)
         loadFactor = double(usedSize) / size;
         cout << "Size reduced to half" << endl;
     }
+    resizeCount++;
     cout << endl;
 }
 

@@ -14,6 +14,7 @@ typedef  chrono::time_point<high_resolution_clock> timePoint;
 typedef chrono::duration<long long, ratio<1, 1000000>> duration;
 
 extern int probeCount;
+extern int resizeCount;
 extern unsigned int a;
 extern unsigned int b;
 extern unsigned int p;
@@ -126,7 +127,7 @@ void insertDeleteKeys()
     }
     timePoint end = high_resolution_clock::now();
     duration timeTaken = duration_cast<microseconds>(end - start);
-    cout << "Total time taken for insertions: " << timeTaken.count()/1000000.00;
+    cout << "Total time taken for insertions: " << timeTaken.count()/1000000.00 << endl;
 
 
 
