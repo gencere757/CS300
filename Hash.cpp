@@ -38,7 +38,7 @@ Hash::Hash()
     collisionHandling = 'l';
     cout << "Enter hashing type:" << endl;
     cin >> hashType;
-    cout << "Enter collision handling method:";
+    cout << "Enter collision handling method:" << endl"";
     cin >> collisionHandling;
     hashedElements = new int[size];
     for (int i = 0; i < size; i++)
@@ -223,8 +223,10 @@ int Hash::search(const int& elem) const
 
 void Hash::resize(char type)
 {
+    // ReSharper disable once CppDFAConstantConditions
     if (type == 'e')    //Enlarge
     {
+        // ReSharper disable once CppDFAUnreachableCode
         cout << endl << "Size too small. Enlarging..." << endl << endl;
 
         int* copy = new int[size * 2];  //Create copy

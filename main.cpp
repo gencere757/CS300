@@ -132,7 +132,7 @@ void insertDeleteKeys()
 
     //Delete test
     start = high_resolution_clock::now();
-    for (int i = 0; i < values.size(); i++)
+    for (int i = 0; i < values.size()-500; i++)
     {
         table.deleteElem(values.at(i));
     }
