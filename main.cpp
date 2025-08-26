@@ -14,6 +14,7 @@ typedef  chrono::time_point<high_resolution_clock> timePoint;
 typedef chrono::duration<long long, ratio<1, 1000000>> duration;
 
 extern int probeCount;
+extern int resizeCount;
 extern unsigned int a;
 extern unsigned int b;
 extern unsigned int p;
