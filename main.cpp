@@ -94,8 +94,8 @@ int getRandomInteger(const int& min, const int& max) {
 
 int main()
 {
-    elemNumberAndTimeTaken();
-    //insertDeleteKeys();
+    //elemNumberAndTimeTaken();
+    insertDeleteKeys();
     //probeVsLoad();
     return 0;
 }
@@ -134,11 +134,12 @@ void insertDeleteKeys()
     start = high_resolution_clock::now();
     for (int i = 0; i < values.size(); i++)
     {
-        table.deleteElem(i);
+        table.deleteElem(values.at(i));
     }
     end = high_resolution_clock::now();
     timeTaken = duration_cast<microseconds>(end - start);
-    cout << "Total time taken to delete: " << timeTaken.count()/1000000.00;
+    cout << "Total time taken to delete: " << timeTaken.count()/1000000.00 << endl;
+    table.printTable();
 }
 
 
